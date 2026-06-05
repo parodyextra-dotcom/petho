@@ -3,2215 +3,2383 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-  <title>펫호 - 이색반려동물 진료 원스톱 서비스</title>
+  <title>펫호 - 반려동물 진료 원스톱 서비스</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.4.0/css/all.min.css" />
   <style>
     :root {
-      --primary: #4D9FEC;
-      --primary-light: #E8F4FF;
-      --primary-dark: #2B7DD4;
-      --secondary: #FF7043;
-      --secondary-light: #FFF0EB;
-      --accent-green: #4CAF82;
-      --accent-purple: #9C6FE4;
-      --accent-yellow: #FFB800;
-      --bg: #F5F7FA;
-      --card: #FFFFFF;
-      --text: #1A1A2E;
-      --text-sub: #6B7280;
-      --text-light: #9CA3AF;
-      --border: #E5E7EB;
-      --shadow: 0 2px 12px rgba(0,0,0,0.08);
-      --shadow-lg: 0 8px 32px rgba(0,0,0,0.12);
-      --radius: 16px;
-      --radius-sm: 10px;
-      --radius-xs: 8px;
-      --funeral-primary: #5C6B73;
-      --funeral-warm: #A67C52;
-      --funeral-light: #F8F6F3;
+      --primary:        #4D9FEC;
+      --primary-light:  #E8F4FF;
+      --primary-dark:   #2B7DD4;
+      --secondary:      #FF7043;
+      --secondary-light:#FFF0EB;
+      --accent-green:   #4CAF82;
+      --accent-purple:  #9C6FE4;
+      --accent-yellow:  #FFB800;
+      --bg:             #F5F7FA;
+      --card:           #FFFFFF;
+      --text:           #1A1A2E;
+      --text-sub:       #6B7280;
+      --text-light:     #9CA3AF;
+      --border:         #E5E9F0;
+      --nav-height:     64px;
     }
-    * { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
+    * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
     body {
-      font-family:'Noto Sans KR',sans-serif;
-      background:#E8ECF0;
-      display:flex;
-      justify-content:center;
-      align-items:center;
-      min-height:100vh;
-      color:var(--text);
-      overflow:hidden;
+      font-family: 'Noto Sans KR', sans-serif;
+      background: #1a1a2e;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
     }
-    .phone-frame {
-      width:390px; height:844px;
-      background:var(--bg);
-      border-radius:44px;
-      overflow:hidden;
-      position:relative;
-      box-shadow: 0 20px 60px rgba(0,0,0,0.25);
+    #app {
+      width: 390px;
+      height: 844px;
+      background: var(--bg);
+      position: relative;
+      overflow: hidden;
+      box-shadow: 0 30px 80px rgba(0,0,0,0.5);
+      border-radius: 40px;
     }
-    @media(max-width:440px){
-      .phone-frame { width:100vw; height:100vh; border-radius:0; }
-      body { align-items:stretch; }
+    @media (max-width: 440px) {
+      body { background: var(--bg); align-items: flex-start; }
+      #app { width: 100vw; height: 100dvh; border-radius: 0; box-shadow: none; }
     }
 
-    /* ── Screens ── */
+    /* ── SCREEN ── */
     .screen {
-      position:absolute; inset:0;
-      display:flex; flex-direction:column;
-      opacity:0; visibility:hidden;
-      transition: opacity .35s, transform .35s;
-      transform: translateX(30px);
-      background:var(--bg);
-      z-index:1;
+      position: absolute;
+      inset: 0;
+      display: none;
+      flex-direction: column;
+      background: var(--bg);
+      overflow: hidden;
     }
-    .screen.active {
-      opacity:1; visibility:visible;
-      transform: translateX(0);
-      z-index:10;
-    }
-    .screen.slide-out {
-      opacity:0; transform: translateX(-30px);
-    }
+    .screen.active { display: flex; }
 
-    /* ── Top Bar ── */
-    .top-bar {
-      padding: 16px 20px 12px;
-      display:flex; align-items:center; justify-content:space-between;
-      background:var(--card);
-      flex-shrink:0;
+    /* ── SCROLL CONTENT ── */
+    .scroll-content {
+      flex: 1;
+      overflow-y: auto;
+      overflow-x: hidden;
+      padding-bottom: calc(var(--nav-height) + 8px);
+      -webkit-overflow-scrolling: touch;
     }
-    .top-bar h1 { font-size:20px; font-weight:700; }
-    .top-bar .back-btn {
-      width:36px; height:36px; border:none; background:var(--bg);
-      border-radius:50%; display:flex; align-items:center; justify-content:center;
-      font-size:16px; color:var(--text); cursor:pointer;
-    }
-    .top-bar .icon-btn {
-      width:36px; height:36px; border:none; background:none;
-      font-size:18px; color:var(--text-sub); cursor:pointer;
-    }
+    .scroll-content::-webkit-scrollbar { display: none; }
 
-    /* ── Bottom Nav ── */
+    /* ── BOTTOM NAV ── */
     .bottom-nav {
-      position:absolute; bottom:0; left:0; right:0;
-      height:72px;
-      background:var(--card);
-      display:flex; align-items:center; justify-content:space-around;
-      border-top:1px solid var(--border);
-      z-index:100;
-      padding-bottom:8px;
+      position: absolute;
+      bottom: 0; left: 0; right: 0;
+      height: var(--nav-height);
+      background: var(--card);
+      border-top: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: space-around;
+      z-index: 1000;
+      padding: 0 4px;
+      box-shadow: 0 -4px 20px rgba(0,0,0,0.08);
     }
     .nav-item {
-      display:flex; flex-direction:column; align-items:center;
-      gap:3px; cursor:pointer; border:none; background:none;
-      color:var(--text-light); font-size:10px; font-weight:500;
-      padding:6px 12px; transition:.2s;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 3px;
+      cursor: pointer;
+      padding: 8px 10px;
+      border-radius: 12px;
+      transition: all .2s;
+      flex: 1;
+      position: relative;
     }
-    .nav-item i { font-size:20px; }
-    .nav-item.active { color:var(--primary); }
+    .nav-item i { font-size: 20px; color: var(--text-light); transition: all .2s; }
+    .nav-item span { font-size: 10px; color: var(--text-light); font-weight: 500; transition: all .2s; }
+    .nav-item.active i { color: var(--primary); }
+    .nav-item.active span { color: var(--primary); }
+    .nav-item.active::after {
+      content: ''; position: absolute; bottom: -1px;
+      width: 24px; height: 3px; background: var(--primary); border-radius: 2px 2px 0 0;
+    }
     .nav-fab {
-      width:52px; height:52px;
+      width: 52px; height: 52px;
       background: linear-gradient(135deg, var(--primary), var(--primary-dark));
-      border:none; border-radius:50%;
-      color:#fff; font-size:20px;
-      display:flex; align-items:center; justify-content:center;
-      margin-top:-26px;
-      box-shadow: 0 4px 16px rgba(77,159,236,0.4);
-      cursor:pointer; transition:.2s;
+      border-radius: 16px;
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: center;
+      cursor: pointer;
+      box-shadow: 0 4px 16px rgba(77,159,236,0.45);
+      gap: 2px;
+      transition: transform .15s;
+      flex-shrink: 0;
     }
-    .nav-fab:active { transform:scale(0.92); }
-
-    /* ── Scrollable Content ── */
-    .scroll-content {
-      flex:1; overflow-y:auto; overflow-x:hidden;
-      padding-bottom:80px;
-      -webkit-overflow-scrolling:touch;
-    }
-    .scroll-content::-webkit-scrollbar { display:none; }
-
-    /* ── Common Components ── */
-    .section-title {
-      display:flex; align-items:center; justify-content:space-between;
-      padding:20px 20px 12px;
-    }
-    .section-title h2 { font-size:18px; font-weight:700; }
-    .section-title .more { font-size:13px; color:var(--primary); cursor:pointer; border:none; background:none; }
-
-    .chip-row {
-      display:flex; gap:8px; padding:0 20px;
-      overflow-x:auto; flex-wrap:nowrap;
-    }
-    .chip-row::-webkit-scrollbar { display:none; }
-    .chip {
-      padding:8px 16px; border-radius:20px;
-      border:1px solid var(--border);
-      background:var(--card); color:var(--text-sub);
-      font-size:13px; font-weight:500;
-      white-space:nowrap; cursor:pointer;
-      transition:.2s; flex-shrink:0;
-    }
-    .chip.active { background:var(--primary); color:#fff; border-color:var(--primary); }
-
-    .card {
-      background:var(--card); border-radius:var(--radius);
-      box-shadow:var(--shadow); margin:0 20px 12px;
-      overflow:hidden;
-    }
-
-    .btn-primary {
-      background: linear-gradient(135deg, var(--primary), var(--primary-dark));
-      color:#fff; border:none; border-radius:var(--radius-sm);
-      padding:14px 24px; font-size:15px; font-weight:600;
-      cursor:pointer; width:100%; transition:.2s;
-      font-family:inherit;
-    }
-    .btn-primary:active { transform:scale(0.97); }
-
-    .btn-secondary {
-      background:var(--primary-light); color:var(--primary);
-      border:none; border-radius:var(--radius-sm);
-      padding:10px 20px; font-size:14px; font-weight:600;
-      cursor:pointer; transition:.2s; font-family:inherit;
-    }
-
-    .btn-outline {
-      background:none; border:1.5px solid var(--primary);
-      color:var(--primary); border-radius:var(--radius-sm);
-      padding:10px 20px; font-size:14px; font-weight:600;
-      cursor:pointer; font-family:inherit;
-    }
-
-    .badge {
-      display:inline-block; padding:4px 10px;
-      border-radius:12px; font-size:11px; font-weight:600;
-    }
-    .badge-blue { background:var(--primary-light); color:var(--primary); }
-    .badge-orange { background:var(--secondary-light); color:var(--secondary); }
-    .badge-green { background:#E8F5E9; color:var(--accent-green); }
-    .badge-purple { background:#F3E8FF; color:var(--accent-purple); }
+    .nav-fab:active { transform: scale(0.93); }
+    .nav-fab i { font-size: 18px; color: #fff; }
+    .nav-fab span { font-size: 9px; color: rgba(255,255,255,0.9); font-weight: 600; }
 
     /* ── SPLASH ── */
-    #splash { background:linear-gradient(160deg, #4D9FEC 0%, #2B7DD4 50%, #1A5BA0 100%); z-index:50; }
-    .splash-content {
-      flex:1; display:flex; flex-direction:column;
-      align-items:center; justify-content:center; padding:40px;
-      color:#fff; text-align:center;
+    #screen-splash {
+      background: linear-gradient(160deg, #1A3A5C 0%, #2B7DD4 50%, #4D9FEC 100%);
     }
-    .splash-logo {
-      width:100px; height:100px;
-      background:rgba(255,255,255,0.2);
-      border-radius:28px; display:flex;
-      align-items:center; justify-content:center;
-      font-size:48px; margin-bottom:24px;
-      backdrop-filter:blur(10px);
+    .splash-inner {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 40px 32px;
+      gap: 0;
     }
-    .splash-content h1 { font-size:32px; font-weight:800; margin-bottom:8px; }
-    .splash-content p { font-size:15px; opacity:0.85; margin-bottom:48px; }
-    .splash-btns { width:100%; display:flex; flex-direction:column; gap:12px; }
-    .splash-btns .btn-white {
-      background:#fff; color:var(--primary-dark);
-      border:none; border-radius:var(--radius-sm);
-      padding:16px; font-size:16px; font-weight:700;
-      cursor:pointer; font-family:inherit;
+    .splash-logo-wrap {
+      width: 110px; height: 110px;
+      background: rgba(255,255,255,0.15);
+      border-radius: 32px;
+      display: flex; align-items: center; justify-content: center;
+      margin-bottom: 24px;
+      backdrop-filter: blur(10px);
+      border: 2px solid rgba(255,255,255,0.25);
     }
-    .splash-btns .btn-ghost {
-      background:rgba(255,255,255,0.15);
-      color:#fff; border:1px solid rgba(255,255,255,0.3);
-      border-radius:var(--radius-sm); padding:14px;
-      font-size:15px; font-weight:600; cursor:pointer;
-      font-family:inherit; backdrop-filter:blur(6px);
+    .splash-logo-wrap i { font-size: 56px; color: #fff; }
+    .splash-title { font-size: 42px; font-weight: 800; color: #fff; letter-spacing: -1px; }
+    .splash-subtitle { font-size: 15px; color: rgba(255,255,255,0.8); margin-top: 8px; text-align: center; line-height: 1.5; }
+    .splash-pets {
+      display: flex; gap: 12px; margin: 32px 0;
+      flex-wrap: wrap; justify-content: center;
     }
+    .pet-chip {
+      background: rgba(255,255,255,0.2);
+      border: 1px solid rgba(255,255,255,0.3);
+      border-radius: 20px;
+      padding: 6px 14px;
+      font-size: 12px; color: #fff; font-weight: 500;
+      backdrop-filter: blur(4px);
+    }
+    .pet-chip.exotic {
+      background: linear-gradient(135deg, #FF7043, #FF9800);
+      border-color: transparent;
+      font-weight: 700;
+    }
+    .splash-btns { width: 100%; display: flex; flex-direction: column; gap: 12px; margin-top: 16px; }
+    .btn-splash-primary {
+      width: 100%; padding: 16px;
+      background: #fff; border: none; border-radius: 16px;
+      font-size: 16px; font-weight: 700; color: var(--primary-dark);
+      cursor: pointer; transition: all .2s;
+    }
+    .btn-splash-primary:active { transform: scale(0.97); }
+    .btn-splash-secondary {
+      width: 100%; padding: 14px;
+      background: rgba(255,255,255,0.15); border: 1.5px solid rgba(255,255,255,0.4);
+      border-radius: 16px; font-size: 15px; font-weight: 600; color: #fff;
+      cursor: pointer; transition: all .2s;
+    }
+
+    /* ── TOP BAR ── */
+    .top-bar {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 16px 20px 12px;
+      background: var(--card);
+      border-bottom: 1px solid var(--border);
+      flex-shrink: 0;
+    }
+    .top-bar-title { font-size: 18px; font-weight: 700; color: var(--text); }
+    .top-bar-back {
+      width: 36px; height: 36px;
+      display: flex; align-items: center; justify-content: center;
+      cursor: pointer; border-radius: 10px;
+      transition: background .15s;
+    }
+    .top-bar-back:active { background: var(--border); }
+    .top-bar-back i { font-size: 18px; color: var(--text); }
+    .top-bar-action {
+      width: 36px; height: 36px;
+      display: flex; align-items: center; justify-content: center;
+      cursor: pointer;
+    }
+    .top-bar-action i { font-size: 20px; color: var(--text-sub); }
 
     /* ── HOME ── */
     .home-header {
-      background:var(--card); padding:16px 20px;
+      background: linear-gradient(135deg, #1A3A5C, #2B7DD4);
+      padding: 20px 20px 28px;
+      flex-shrink: 0;
     }
-    .home-greeting { font-size:14px; color:var(--text-sub); }
-    .home-greeting strong { color:var(--text); font-weight:700; }
+    .home-header-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; }
+    .home-greeting { font-size: 14px; color: rgba(255,255,255,0.7); }
+    .home-name { font-size: 20px; font-weight: 700; color: #fff; margin-top: 2px; }
+    .home-notif {
+      width: 40px; height: 40px;
+      background: rgba(255,255,255,0.15); border-radius: 12px;
+      display: flex; align-items: center; justify-content: center; cursor: pointer;
+      position: relative;
+    }
+    .home-notif i { font-size: 18px; color: #fff; }
+    .notif-dot {
+      position: absolute; top: 8px; right: 9px;
+      width: 8px; height: 8px; background: var(--secondary); border-radius: 50%;
+      border: 1.5px solid #1A3A5C;
+    }
     .home-search {
-      margin-top:12px; display:flex; gap:8px;
+      display: flex; align-items: center; gap: 10px;
+      background: rgba(255,255,255,0.95); border-radius: 14px; padding: 12px 16px;
+      cursor: pointer;
     }
-    .home-search input {
-      flex:1; padding:12px 16px;
-      background:var(--bg); border:none; border-radius:var(--radius-sm);
-      font-size:14px; font-family:inherit; color:var(--text);
-    }
-    .home-search input::placeholder { color:var(--text-light); }
-    .home-search button {
-      width:44px; height:44px; background:var(--primary);
-      border:none; border-radius:var(--radius-sm);
-      color:#fff; font-size:16px; cursor:pointer;
-    }
+    .home-search i { font-size: 16px; color: var(--primary); }
+    .home-search span { font-size: 14px; color: var(--text-light); }
+
+    .section { padding: 20px 20px 0; }
+    .section-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px; }
+    .section-title { font-size: 16px; font-weight: 700; color: var(--text); }
+    .section-more { font-size: 13px; color: var(--primary); font-weight: 500; cursor: pointer; }
+
+    /* Quick Menu */
     .quick-menu {
-      display:grid; grid-template-columns:repeat(4,1fr);
-      gap:0; padding:20px;
+      display: grid; grid-template-columns: repeat(5, 1fr);
+      gap: 8px; padding: 16px 20px;
     }
     .quick-item {
-      display:flex; flex-direction:column; align-items:center;
-      gap:8px; cursor:pointer; border:none; background:none;
-      font-family:inherit;
+      display: flex; flex-direction: column; align-items: center; gap: 6px;
+      cursor: pointer;
     }
     .quick-icon {
-      width:52px; height:52px; border-radius:16px;
-      display:flex; align-items:center; justify-content:center;
-      font-size:22px;
+      width: 52px; height: 52px; border-radius: 16px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 22px;
+      transition: transform .15s;
     }
-    .quick-item span { font-size:12px; font-weight:500; color:var(--text-sub); }
+    .quick-icon:active { transform: scale(0.9); }
+    .quick-label { font-size: 10px; font-weight: 600; color: var(--text-sub); text-align: center; line-height: 1.3; }
+    .qi-blue   { background: var(--primary-light); color: var(--primary); }
+    .qi-orange { background: var(--secondary-light); color: var(--secondary); }
+    .qi-green  { background: #E8F5ED; color: var(--accent-green); }
+    .qi-purple { background: #F0EAFF; color: var(--accent-purple); }
+    .qi-yellow { background: #FFF8E1; color: var(--accent-yellow); }
+    .qi-gray   { background: #F0F0F0; color: #888; }
+    .qi-pink   { background: #FFE8F0; color: #E91E63; }
 
-    .banner-slider {
-      margin:0 20px; border-radius:var(--radius);
-      overflow:hidden; position:relative; height:140px;
+    /* Banner */
+    .banner-wrap { padding: 0 20px; }
+    .banner {
+      background: linear-gradient(135deg, #FF7043, #FF9800);
+      border-radius: 18px; padding: 18px 20px;
+      display: flex; align-items: center; justify-content: space-between;
+      cursor: pointer;
     }
-    .banner-slide {
-      position:absolute; inset:0;
-      padding:24px; display:flex; flex-direction:column;
-      justify-content:center; color:#fff;
-      opacity:0; transition:opacity .5s;
+    .banner-text { flex: 1; }
+    .banner-tag {
+      display: inline-block;
+      background: rgba(255,255,255,0.25); border-radius: 8px;
+      padding: 3px 10px; font-size: 11px; font-weight: 700; color: #fff;
+      margin-bottom: 6px;
     }
-    .banner-slide.active { opacity:1; }
-    .banner-slide h3 { font-size:18px; font-weight:700; margin-bottom:6px; }
-    .banner-slide p { font-size:13px; opacity:0.9; }
-    .banner-dots {
-      position:absolute; bottom:12px; right:16px;
-      display:flex; gap:6px;
+    .banner-title { font-size: 17px; font-weight: 800; color: #fff; line-height: 1.3; }
+    .banner-sub { font-size: 12px; color: rgba(255,255,255,0.85); margin-top: 4px; }
+    .banner-emoji { font-size: 48px; }
+
+    /* Exotic Banner */
+    .exotic-banner {
+      margin: 16px 20px 0;
+      background: linear-gradient(135deg, #9C6FE4, #6B48D4);
+      border-radius: 18px; padding: 16px 20px;
+      display: flex; align-items: center; gap: 14px;
+      cursor: pointer;
     }
-    .banner-dot {
-      width:6px; height:6px; border-radius:50%;
-      background:rgba(255,255,255,0.4);
+    .exotic-icon { font-size: 40px; }
+    .exotic-text .exotic-tag {
+      display: inline-block;
+      background: rgba(255,255,255,0.2); border-radius: 6px;
+      padding: 2px 8px; font-size: 10px; font-weight: 700; color: #fff;
+      margin-bottom: 4px;
     }
-    .banner-dot.active { background:#fff; width:18px; border-radius:3px; }
+    .exotic-text .exotic-title { font-size: 15px; font-weight: 700; color: #fff; }
+    .exotic-text .exotic-sub { font-size: 12px; color: rgba(255,255,255,0.8); margin-top: 2px; }
 
     /* Hospital Card */
+    .hospital-list { display: flex; flex-direction: column; gap: 12px; padding: 0 20px 20px; }
     .hospital-card {
-      display:flex; gap:14px; padding:16px;
+      background: var(--card); border-radius: 16px;
+      padding: 16px; cursor: pointer;
+      box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+      transition: transform .15s;
+      border: 1.5px solid transparent;
     }
-    .hospital-thumb {
-      width:72px; height:72px; border-radius:var(--radius-sm);
-      background:var(--primary-light);
-      display:flex; align-items:center; justify-content:center;
-      font-size:28px; flex-shrink:0;
+    .hospital-card:active { transform: scale(0.98); }
+    .hospital-card.selected { border-color: var(--primary); }
+    .hcard-top { display: flex; gap: 12px; align-items: flex-start; }
+    .hcard-img {
+      width: 56px; height: 56px; border-radius: 14px;
+      background: var(--primary-light);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 28px; flex-shrink: 0;
     }
-    .hospital-info { flex:1; min-width:0; }
-    .hospital-info h3 { font-size:15px; font-weight:600; margin-bottom:4px; }
-    .hospital-meta {
-      display:flex; align-items:center; gap:6px;
-      font-size:12px; color:var(--text-sub); margin-bottom:6px;
+    .hcard-info { flex: 1; }
+    .hcard-name { font-size: 15px; font-weight: 700; color: var(--text); }
+    .hcard-tags { display: flex; gap: 6px; flex-wrap: wrap; margin-top: 4px; }
+    .htag {
+      font-size: 11px; padding: 2px 8px; border-radius: 6px; font-weight: 500;
     }
-    .hospital-meta .star { color:var(--accent-yellow); }
-    .hospital-tags { display:flex; gap:4px; flex-wrap:wrap; }
-    .hospital-tag {
-      padding:3px 8px; border-radius:6px;
-      font-size:11px; font-weight:500;
-      background:var(--bg); color:var(--text-sub);
+    .htag-blue  { background: var(--primary-light); color: var(--primary); }
+    .htag-orange{ background: var(--secondary-light); color: var(--secondary); }
+    .htag-green { background: #E8F5ED; color: var(--accent-green); }
+    .htag-purple{ background: #F0EAFF; color: var(--accent-purple); }
+    .hcard-meta { display: flex; align-items: center; gap: 12px; margin-top: 8px; }
+    .hcard-dist { font-size: 12px; color: var(--text-light); }
+    .hcard-rating { display: flex; align-items: center; gap: 3px; }
+    .hcard-rating i { font-size: 11px; color: var(--accent-yellow); }
+    .hcard-rating span { font-size: 12px; color: var(--text-sub); font-weight: 600; }
+    .hcard-open { font-size: 11px; padding: 2px 8px; border-radius: 6px; font-weight: 600; }
+    .open-yes { background: #E8F5ED; color: var(--accent-green); }
+    .open-no  { background: #FFE8E8; color: #E53935; }
+    .hcard-bottom { margin-top: 10px; padding-top: 10px; border-top: 1px solid var(--border); display: flex; gap: 8px; }
+    .hcard-btn {
+      flex: 1; padding: 8px; border-radius: 10px; border: none;
+      font-size: 13px; font-weight: 600; cursor: pointer; transition: all .15s;
     }
+    .hcard-btn-primary { background: var(--primary); color: #fff; }
+    .hcard-btn-outline { background: var(--primary-light); color: var(--primary); }
 
     /* ── FIND ── */
-    .find-header { background:var(--card); padding:16px 20px; }
-    .find-search {
-      display:flex; gap:8px;
+    .map-area {
+      height: 220px; background: #D4E9FF; flex-shrink: 0;
+      position: relative; overflow: hidden;
     }
-    .find-search input {
-      flex:1; padding:10px 14px;
-      background:var(--bg); border:none; border-radius:var(--radius-xs);
-      font-size:14px; font-family:inherit;
+    .map-bg {
+      position: absolute; inset: 0;
+      background: linear-gradient(135deg, #C8E6FF 0%, #D4E9FF 50%, #C0DFF5 100%);
     }
-    .find-search button {
-      padding:10px 16px; background:var(--primary);
-      border:none; border-radius:var(--radius-xs);
-      color:#fff; font-size:13px; font-weight:600;
-      cursor:pointer; font-family:inherit;
+    .map-road-h {
+      position: absolute; left: 0; right: 0; top: 50%;
+      height: 18px; background: rgba(255,255,255,0.7); transform: translateY(-50%);
     }
-    .map-container {
-      height:240px; background:linear-gradient(135deg, #E3F2FD 0%, #BBDEFB 100%);
-      position:relative; overflow:hidden;
-    }
-    .map-overlay {
-      position:absolute; inset:0;
-      display:flex; align-items:center; justify-content:center;
-      flex-direction:column; gap:8px;
-    }
-    .map-overlay i { font-size:40px; color:var(--primary); opacity:0.5; }
-    .map-overlay span { font-size:13px; color:var(--text-sub); }
-    .map-markers {
-      position:absolute; inset:0;
+    .map-road-v {
+      position: absolute; top: 0; bottom: 0; left: 40%;
+      width: 14px; background: rgba(255,255,255,0.7);
     }
     .map-marker {
-      position:absolute; width:36px; height:36px;
-      background:var(--primary); border-radius:50% 50% 50% 0;
-      transform:rotate(-45deg);
-      display:flex; align-items:center; justify-content:center;
-      box-shadow:0 2px 8px rgba(0,0,0,0.2);
-      cursor:pointer; transition:.2s;
+      position: absolute; cursor: pointer;
+      display: flex; flex-direction: column; align-items: center;
+      transition: transform .15s;
     }
-    .map-marker i {
-      transform:rotate(45deg); color:#fff; font-size:14px;
+    .map-marker:active { transform: scale(1.15); }
+    .map-marker-pin {
+      width: 36px; height: 36px; border-radius: 50% 50% 50% 0;
+      transform: rotate(-45deg); display: flex; align-items: center; justify-content: center;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.25);
     }
-    .map-marker.active { background:var(--secondary); transform:rotate(-45deg) scale(1.2); }
-    .view-toggle {
-      display:flex; margin:12px 20px; background:var(--card);
-      border-radius:var(--radius-xs); overflow:hidden;
-      border:1px solid var(--border);
+    .map-marker-pin i { transform: rotate(45deg); font-size: 16px; color: #fff; }
+    .map-marker-label {
+      background: var(--card); border-radius: 8px; padding: 3px 8px;
+      font-size: 11px; font-weight: 700; color: var(--text);
+      box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+      margin-top: 4px; white-space: nowrap;
     }
-    .view-toggle button {
-      flex:1; padding:10px; border:none; background:none;
-      font-size:13px; font-weight:600; cursor:pointer;
-      font-family:inherit; color:var(--text-sub); transition:.2s;
+    .map-marker.active .map-marker-pin { box-shadow: 0 4px 16px rgba(77,159,236,0.6); }
+    .map-controls {
+      position: absolute; right: 12px; top: 12px;
+      display: flex; flex-direction: column; gap: 6px;
     }
-    .view-toggle button.active { background:var(--primary); color:#fff; }
+    .map-ctrl-btn {
+      width: 36px; height: 36px;
+      background: var(--card); border-radius: 10px;
+      display: flex; align-items: center; justify-content: center;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.15); cursor: pointer;
+      font-size: 14px; color: var(--text);
+    }
+    .filter-chips {
+      display: flex; gap: 8px; padding: 12px 20px;
+      overflow-x: auto; flex-shrink: 0;
+    }
+    .filter-chips::-webkit-scrollbar { display: none; }
+    .chip {
+      display: flex; align-items: center; gap: 5px;
+      padding: 7px 14px; border-radius: 20px; border: 1.5px solid var(--border);
+      font-size: 13px; font-weight: 600; color: var(--text-sub);
+      background: var(--card); cursor: pointer; white-space: nowrap;
+      transition: all .15s;
+    }
+    .chip.active { background: var(--primary); border-color: var(--primary); color: #fff; }
+    .chip i { font-size: 12px; }
 
     /* ── BOOKING ── */
     .booking-steps {
-      display:flex; padding:16px 20px; gap:4px;
+      display: flex; gap: 0; padding: 16px 20px;
+      background: var(--card); border-bottom: 1px solid var(--border);
+      flex-shrink: 0;
     }
-    .booking-step {
-      flex:1; height:4px; border-radius:2px;
-      background:var(--border);
+    .step-item {
+      flex: 1; display: flex; flex-direction: column; align-items: center; gap: 4px;
+      position: relative;
     }
-    .booking-step.done { background:var(--primary); }
-    .booking-step.current { background:var(--accent-yellow); }
+    .step-item:not(:last-child)::after {
+      content: ''; position: absolute;
+      top: 14px; left: 50%; right: -50%;
+      height: 2px; background: var(--border);
+      z-index: 0;
+    }
+    .step-item.done:not(:last-child)::after { background: var(--primary); }
+    .step-num {
+      width: 28px; height: 28px; border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 12px; font-weight: 700;
+      background: var(--border); color: var(--text-light);
+      position: relative; z-index: 1;
+      transition: all .2s;
+    }
+    .step-item.active .step-num { background: var(--primary); color: #fff; }
+    .step-item.done .step-num { background: var(--accent-green); color: #fff; }
+    .step-label { font-size: 10px; color: var(--text-light); font-weight: 500; }
+    .step-item.active .step-label { color: var(--primary); font-weight: 600; }
 
-    .calendar-header {
-      display:flex; align-items:center; justify-content:space-between;
-      padding:16px 20px;
+    .booking-section { padding: 20px; }
+    .booking-title { font-size: 17px; font-weight: 700; color: var(--text); margin-bottom: 16px; }
+
+    /* Calendar */
+    .calendar { background: var(--card); border-radius: 16px; padding: 16px; box-shadow: 0 2px 12px rgba(0,0,0,0.06); }
+    .cal-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px; }
+    .cal-month { font-size: 16px; font-weight: 700; color: var(--text); }
+    .cal-nav { display: flex; gap: 8px; }
+    .cal-nav-btn {
+      width: 32px; height: 32px; border-radius: 8px; border: 1px solid var(--border);
+      background: none; cursor: pointer; display: flex; align-items: center; justify-content: center;
+      font-size: 12px; color: var(--text);
     }
-    .calendar-header h3 { font-size:16px; font-weight:600; }
-    .calendar-header button {
-      width:32px; height:32px; border:none;
-      background:var(--bg); border-radius:50%;
-      cursor:pointer; font-size:14px; color:var(--text);
+    .cal-weekdays {
+      display: grid; grid-template-columns: repeat(7, 1fr);
+      text-align: center; margin-bottom: 6px;
     }
-    .calendar-weekdays {
-      display:grid; grid-template-columns:repeat(7,1fr);
-      padding:0 20px; text-align:center;
-    }
-    .calendar-weekdays span {
-      font-size:12px; color:var(--text-light); font-weight:500;
-      padding:8px 0;
-    }
-    .calendar-days {
-      display:grid; grid-template-columns:repeat(7,1fr);
-      padding:0 20px; gap:4px;
-    }
+    .cal-weekday { font-size: 11px; font-weight: 600; color: var(--text-light); padding: 4px 0; }
+    .cal-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 2px; }
     .cal-day {
-      aspect-ratio:1; display:flex; align-items:center;
-      justify-content:center; font-size:14px; font-weight:500;
-      border-radius:50%; cursor:pointer; transition:.2s;
-      border:none; background:none; font-family:inherit;
-      color:var(--text);
+      aspect-ratio: 1; border-radius: 8px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 13px; color: var(--text); cursor: pointer;
+      transition: all .15s; position: relative;
     }
-    .cal-day:hover { background:var(--primary-light); }
-    .cal-day.today { border:2px solid var(--primary); }
-    .cal-day.selected { background:var(--primary); color:#fff; }
-    .cal-day.disabled { color:var(--text-light); pointer-events:none; }
-    .cal-day.has-slot::after {
-      content:''; width:4px; height:4px; border-radius:50%;
-      background:var(--accent-green); position:absolute;
-      margin-top:28px;
+    .cal-day:hover { background: var(--primary-light); }
+    .cal-day.today { font-weight: 700; color: var(--primary); }
+    .cal-day.selected { background: var(--primary); color: #fff; font-weight: 700; }
+    .cal-day.has-slots::after {
+      content: ''; position: absolute; bottom: 3px;
+      width: 5px; height: 5px; border-radius: 50%;
+      background: var(--accent-green);
     }
-    .cal-day { position:relative; }
+    .cal-day.selected::after { background: rgba(255,255,255,0.7); }
+    .cal-day.disabled { color: var(--text-light); cursor: not-allowed; }
+    .cal-day.other-month { color: var(--border); cursor: default; }
 
-    .time-slots {
-      display:grid; grid-template-columns:repeat(3,1fr);
-      gap:8px; padding:16px 20px;
-    }
+    .time-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
     .time-slot {
-      padding:12px 8px; text-align:center;
-      border:1.5px solid var(--border); border-radius:var(--radius-xs);
-      font-size:14px; font-weight:500; cursor:pointer;
-      background:var(--card); transition:.2s;
-      font-family:inherit; color:var(--text);
+      padding: 12px; border-radius: 12px; text-align: center;
+      border: 1.5px solid var(--border); cursor: pointer;
+      transition: all .15s; background: var(--card);
     }
-    .time-slot.selected { border-color:var(--primary); background:var(--primary-light); color:var(--primary); }
-    .time-slot.disabled { background:var(--bg); color:var(--text-light); pointer-events:none; text-decoration:line-through; }
+    .time-slot .slot-time { font-size: 14px; font-weight: 700; color: var(--text); }
+    .time-slot .slot-status { font-size: 11px; color: var(--text-light); margin-top: 2px; }
+    .time-slot.available:hover { border-color: var(--primary); background: var(--primary-light); }
+    .time-slot.selected { border-color: var(--primary); background: var(--primary); }
+    .time-slot.selected .slot-time { color: #fff; }
+    .time-slot.selected .slot-status { color: rgba(255,255,255,0.8); }
+    .time-slot.full { opacity: 0.5; cursor: not-allowed; background: var(--bg); }
+    .time-slot.full .slot-time { color: var(--text-light); }
 
-    /* ── MYPET ── */
-    .pet-tabs {
-      display:flex; gap:12px; padding:0 20px; margin-bottom:16px;
-    }
+    /* ── MY PET ── */
+    .pet-tabs { display: flex; gap: 8px; padding: 16px 20px 0; flex-shrink: 0; }
     .pet-tab {
-      display:flex; align-items:center; gap:8px;
-      padding:10px 16px; border-radius:24px;
-      border:1.5px solid var(--border);
-      background:var(--card); cursor:pointer;
-      font-family:inherit; font-size:13px; font-weight:600;
-      color:var(--text-sub); transition:.2s;
+      display: flex; align-items: center; gap: 6px;
+      padding: 8px 16px; border-radius: 20px;
+      font-size: 13px; font-weight: 600; cursor: pointer;
+      border: 1.5px solid var(--border); background: var(--card);
+      color: var(--text-sub); transition: all .15s;
     }
-    .pet-tab.active { border-color:var(--primary); background:var(--primary-light); color:var(--primary); }
-    .pet-tab .pet-avatar {
-      width:28px; height:28px; border-radius:50%;
-      display:flex; align-items:center; justify-content:center;
-      font-size:16px;
+    .pet-tab.active { background: var(--primary); border-color: var(--primary); color: #fff; }
+    .pet-card-main {
+      margin: 16px 20px; background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+      border-radius: 20px; padding: 20px; color: #fff;
     }
-    .health-dashboard {
-      display:grid; grid-template-columns:1fr 1fr;
-      gap:12px; padding:0 20px; margin-bottom:16px;
+    .pet-card-header { display: flex; align-items: center; gap: 14px; margin-bottom: 16px; }
+    .pet-avatar {
+      width: 64px; height: 64px; border-radius: 50%;
+      background: rgba(255,255,255,0.25);
+      display: flex; align-items: center; justify-content: center; font-size: 36px;
     }
-    .health-card {
-      background:var(--card); border-radius:var(--radius-sm);
-      padding:16px; box-shadow:var(--shadow);
-    }
-    .health-card .label { font-size:12px; color:var(--text-sub); margin-bottom:8px; }
-    .health-card .value { font-size:22px; font-weight:700; }
-    .health-card .unit { font-size:13px; color:var(--text-sub); font-weight:400; }
+    .pet-name { font-size: 20px; font-weight: 800; }
+    .pet-breed { font-size: 13px; color: rgba(255,255,255,0.8); margin-top: 2px; }
+    .pet-stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
+    .pet-stat { background: rgba(255,255,255,0.15); border-radius: 12px; padding: 10px; text-align: center; }
+    .pet-stat-val { font-size: 18px; font-weight: 800; }
+    .pet-stat-key { font-size: 11px; color: rgba(255,255,255,0.7); margin-top: 2px; }
 
-    .timeline { padding:0 20px; }
-    .timeline-item {
-      display:flex; gap:14px; padding-bottom:20px;
-      position:relative;
+    /* Health chart */
+    .health-chart {
+      margin: 0 20px 16px;
+      background: var(--card); border-radius: 16px; padding: 16px;
+      box-shadow: 0 2px 12px rgba(0,0,0,0.06);
     }
-    .timeline-item::before {
-      content:''; position:absolute;
-      left:15px; top:32px; bottom:0;
-      width:2px; background:var(--border);
+    .chart-bars { display: flex; gap: 8px; align-items: flex-end; height: 80px; margin-top: 12px; }
+    .chart-bar-wrap { flex: 1; display: flex; flex-direction: column; align-items: center; gap: 4px; }
+    .chart-bar {
+      width: 100%; border-radius: 6px 6px 0 0;
+      background: var(--primary-light);
+      transition: height .3s;
     }
-    .timeline-item:last-child::before { display:none; }
-    .timeline-dot {
-      width:32px; height:32px; border-radius:50%;
-      display:flex; align-items:center; justify-content:center;
-      font-size:14px; flex-shrink:0; z-index:1;
+    .chart-bar.active { background: var(--primary); }
+    .chart-bar-label { font-size: 10px; color: var(--text-light); }
+
+    /* Vaccine timeline */
+    .vaccine-timeline { padding: 0 20px 20px; }
+    .vax-item { display: flex; gap: 14px; margin-bottom: 16px; }
+    .vax-dot-wrap { display: flex; flex-direction: column; align-items: center; }
+    .vax-dot {
+      width: 14px; height: 14px; border-radius: 50%; flex-shrink: 0;
+      margin-top: 3px;
     }
-    .timeline-content h4 { font-size:14px; font-weight:600; margin-bottom:2px; }
-    .timeline-content p { font-size:12px; color:var(--text-sub); }
+    .vax-dot.done { background: var(--accent-green); }
+    .vax-dot.upcoming { background: var(--accent-yellow); }
+    .vax-dot.overdue { background: var(--secondary); }
+    .vax-line { width: 2px; flex: 1; background: var(--border); margin-top: 4px; }
+    .vax-info { flex: 1; }
+    .vax-name { font-size: 14px; font-weight: 700; color: var(--text); }
+    .vax-date { font-size: 12px; color: var(--text-light); margin-top: 2px; }
+    .vax-badge { display: inline-block; font-size: 11px; font-weight: 600; padding: 2px 8px; border-radius: 6px; margin-top: 4px; }
+    .vax-done-badge { background: #E8F5ED; color: var(--accent-green); }
+    .vax-upcoming-badge { background: #FFF8E1; color: var(--accent-yellow); }
+    .vax-overdue-badge { background: var(--secondary-light); color: var(--secondary); }
 
     /* ── RECORDS ── */
     .record-card {
-      padding:16px; border-bottom:1px solid var(--border);
+      background: var(--card); border-radius: 16px; padding: 16px;
+      margin-bottom: 12px; box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+      cursor: pointer;
     }
-    .record-card:last-child { border-bottom:none; }
-    .record-header {
-      display:flex; justify-content:space-between; align-items:center;
-      margin-bottom:8px;
-    }
-    .record-header h4 { font-size:15px; font-weight:600; }
-    .record-detail { font-size:13px; color:var(--text-sub); line-height:1.6; }
-    .record-cost {
-      display:flex; justify-content:space-between; align-items:center;
-      margin-top:10px; padding-top:10px; border-top:1px solid var(--border);
-    }
-    .record-cost .amount { font-size:16px; font-weight:700; color:var(--primary); }
+    .record-top { display: flex; justify-content: space-between; align-items: flex-start; }
+    .record-date { font-size: 12px; color: var(--text-light); }
+    .record-cost { font-size: 15px; font-weight: 800; color: var(--primary); }
+    .record-hospital { font-size: 15px; font-weight: 700; color: var(--text); margin-top: 4px; }
+    .record-diagnosis { font-size: 13px; color: var(--text-sub); margin-top: 4px; }
+    .record-tags { display: flex; gap: 6px; flex-wrap: wrap; margin-top: 8px; }
 
-    /* ── MYPAGE ── */
-    .profile-section {
-      background:var(--card); padding:24px 20px;
-      display:flex; align-items:center; gap:16px;
+    /* ── MY PAGE ── */
+    .profile-header {
+      background: linear-gradient(135deg, #1A3A5C, #2B7DD4);
+      padding: 24px 20px 32px;
     }
+    .profile-row { display: flex; align-items: center; gap: 14px; }
     .profile-avatar {
-      width:64px; height:64px; border-radius:50%;
-      background:linear-gradient(135deg, var(--primary-light), #D4ECFF);
-      display:flex; align-items:center; justify-content:center;
-      font-size:28px;
+      width: 64px; height: 64px; border-radius: 50%;
+      background: rgba(255,255,255,0.25);
+      display: flex; align-items: center; justify-content: center; font-size: 32px;
     }
-    .profile-info h3 { font-size:18px; font-weight:700; }
-    .profile-info p { font-size:13px; color:var(--text-sub); }
+    .profile-name { font-size: 20px; font-weight: 800; color: #fff; }
+    .profile-email { font-size: 13px; color: rgba(255,255,255,0.7); margin-top: 2px; }
     .profile-stats {
-      display:flex; gap:0; margin:16px 20px;
-      background:var(--card); border-radius:var(--radius);
-      box-shadow:var(--shadow); overflow:hidden;
+      display: grid; grid-template-columns: repeat(3, 1fr);
+      gap: 1px; background: rgba(255,255,255,0.15);
+      border-radius: 16px; margin-top: 20px; overflow: hidden;
     }
-    .stat-item {
-      flex:1; text-align:center; padding:16px 8px;
-      border-right:1px solid var(--border);
+    .pstat {
+      background: rgba(255,255,255,0.1); padding: 14px;
+      text-align: center; backdrop-filter: blur(4px);
     }
-    .stat-item:last-child { border-right:none; }
-    .stat-item .num { font-size:20px; font-weight:700; color:var(--primary); }
-    .stat-item .label { font-size:11px; color:var(--text-sub); margin-top:4px; }
+    .pstat-val { font-size: 22px; font-weight: 800; color: #fff; }
+    .pstat-key { font-size: 11px; color: rgba(255,255,255,0.7); margin-top: 2px; }
 
-    .menu-list { padding:0 20px; }
+    .menu-list { padding: 8px 0; }
+    .menu-group { padding: 8px 20px 4px; }
+    .menu-group-title { font-size: 12px; font-weight: 700; color: var(--text-light); letter-spacing: 0.5px; text-transform: uppercase; }
     .menu-item {
-      display:flex; align-items:center; gap:14px;
-      padding:16px 0; border-bottom:1px solid var(--border);
-      cursor:pointer;
+      display: flex; align-items: center; gap: 14px;
+      padding: 14px 20px; cursor: pointer; transition: background .15s;
     }
-    .menu-item:last-child { border-bottom:none; }
-    .menu-icon {
-      width:40px; height:40px; border-radius:12px;
-      display:flex; align-items:center; justify-content:center;
-      font-size:16px;
+    .menu-item:active { background: var(--bg); }
+    .menu-item-icon {
+      width: 38px; height: 38px; border-radius: 12px;
+      display: flex; align-items: center; justify-content: center; font-size: 18px;
     }
-    .menu-item span { flex:1; font-size:15px; font-weight:500; }
-    .menu-item .arrow { color:var(--text-light); font-size:14px; }
+    .menu-item-text { flex: 1; }
+    .menu-item-label { font-size: 15px; font-weight: 600; color: var(--text); }
+    .menu-item-sub { font-size: 12px; color: var(--text-light); margin-top: 1px; }
+    .menu-item-arrow { font-size: 14px; color: var(--text-light); }
+    .menu-divider { height: 1px; background: var(--border); margin: 4px 20px; }
 
-    /* ── DETAIL ── */
+    /* ── HOSPITAL DETAIL ── */
     .detail-hero {
-      height:200px;
-      background:linear-gradient(135deg, var(--primary-light) 0%, #D4ECFF 100%);
-      display:flex; align-items:center; justify-content:center;
-      font-size:64px; position:relative;
+      height: 180px; background: linear-gradient(135deg, #4D9FEC22, #4D9FEC44);
+      display: flex; align-items: center; justify-content: center; font-size: 80px;
+      flex-shrink: 0;
     }
-    .detail-hero .back-float {
-      position:absolute; top:16px; left:16px;
-      width:36px; height:36px; background:rgba(255,255,255,0.9);
-      border-radius:50%; display:flex; align-items:center;
-      justify-content:center; border:none; cursor:pointer;
-      font-size:16px; box-shadow:var(--shadow);
+    .detail-info { padding: 20px; background: var(--card); border-bottom: 1px solid var(--border); flex-shrink: 0; }
+    .detail-name { font-size: 22px; font-weight: 800; color: var(--text); }
+    .detail-tags { display: flex; gap: 6px; flex-wrap: wrap; margin: 8px 0; }
+    .detail-meta { display: flex; gap: 16px; margin-top: 10px; }
+    .detail-meta-item { display: flex; align-items: center; gap: 5px; }
+    .detail-meta-item i { font-size: 13px; color: var(--primary); }
+    .detail-meta-item span { font-size: 13px; color: var(--text-sub); }
+    .detail-actions { display: flex; gap: 10px; margin-top: 14px; }
+    .detail-action-btn {
+      flex: 1; padding: 12px; border-radius: 12px; border: none;
+      font-size: 14px; font-weight: 700; cursor: pointer; transition: all .15s;
     }
-    .detail-body { padding:20px; }
-    .detail-body h2 { font-size:22px; font-weight:700; margin-bottom:4px; }
-    .detail-subtitle { font-size:13px; color:var(--text-sub); margin-bottom:16px; }
-    .detail-info-grid {
-      display:grid; grid-template-columns:1fr 1fr; gap:12px;
-      margin-bottom:20px;
-    }
-    .detail-info-item {
-      background:var(--bg); border-radius:var(--radius-xs);
-      padding:14px;
-    }
-    .detail-info-item .label { font-size:12px; color:var(--text-sub); margin-bottom:4px; }
-    .detail-info-item .value { font-size:14px; font-weight:600; }
+    .action-primary { background: var(--primary); color: #fff; }
+    .action-outline { background: var(--primary-light); color: var(--primary); }
 
-    /* ── INSURANCE SCREEN ── */
-    .insurance-hero {
-      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-      padding:28px 20px; color:#fff; text-align:center;
+    /* Review Section */
+    .review-section { padding: 20px; }
+    .review-write-btn {
+      width: 100%; padding: 14px; border-radius: 14px;
+      background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+      border: none; color: #fff; font-size: 15px; font-weight: 700;
+      cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px;
+      margin-bottom: 16px; transition: opacity .15s;
     }
-    .insurance-hero i { font-size:40px; margin-bottom:12px; }
-    .insurance-hero h2 { font-size:22px; font-weight:700; margin-bottom:6px; }
-    .insurance-hero p { font-size:14px; opacity:0.9; }
-
-    .insurance-card {
-      margin:12px 20px; background:var(--card);
-      border-radius:var(--radius); box-shadow:var(--shadow);
-      overflow:hidden;
+    .review-write-btn:active { opacity: 0.85; }
+    .review-card {
+      background: var(--card); border-radius: 14px; padding: 14px;
+      margin-bottom: 10px; box-shadow: 0 2px 8px rgba(0,0,0,0.06);
     }
-    .insurance-card-header {
-      padding:16px; display:flex; align-items:center;
-      gap:12px; border-bottom:1px solid var(--border);
-    }
-    .insurance-card-icon {
-      width:44px; height:44px; border-radius:12px;
-      display:flex; align-items:center; justify-content:center;
-      font-size:20px;
-    }
-    .insurance-card-header h3 { font-size:16px; font-weight:700; }
-    .insurance-card-header .price { font-size:14px; color:var(--primary); font-weight:600; }
-    .insurance-card-body { padding:16px; }
-    .insurance-feature {
-      display:flex; align-items:center; gap:8px;
-      font-size:13px; color:var(--text-sub); margin-bottom:8px;
-    }
-    .insurance-feature i { color:var(--accent-green); font-size:14px; }
-    .insurance-card-footer {
-      padding:12px 16px; background:var(--bg);
-      display:flex; gap:8px;
-    }
-    .insurance-card-footer button { flex:1; }
-
-    .insurance-calc {
-      margin:16px 20px; background:var(--card);
-      border-radius:var(--radius); padding:20px;
-      box-shadow:var(--shadow);
-    }
-    .insurance-calc h3 {
-      font-size:16px; font-weight:700; margin-bottom:16px;
-      display:flex; align-items:center; gap:8px;
-    }
-    .insurance-calc h3 i { color:var(--accent-yellow); }
-    .calc-field { margin-bottom:14px; }
-    .calc-field label {
-      display:block; font-size:13px; font-weight:600;
-      color:var(--text-sub); margin-bottom:6px;
-    }
-    .calc-field select, .calc-field input {
-      width:100%; padding:12px; border:1.5px solid var(--border);
-      border-radius:var(--radius-xs); font-family:inherit;
-      font-size:14px; background:var(--card); color:var(--text);
-    }
-    .calc-result {
-      background:var(--primary-light); border-radius:var(--radius-xs);
-      padding:16px; text-align:center; margin-top:16px;
-    }
-    .calc-result .monthly {
-      font-size:28px; font-weight:800; color:var(--primary);
-    }
-    .calc-result .desc { font-size:12px; color:var(--text-sub); margin-top:4px; }
-
-    /* ── REVIEW SCREEN ── */
-    .review-summary {
-      background:var(--card); margin:12px 20px;
-      border-radius:var(--radius); padding:20px;
-      box-shadow:var(--shadow); text-align:center;
-    }
-    .review-avg { font-size:40px; font-weight:800; color:var(--accent-yellow); }
-    .review-stars { font-size:20px; color:var(--accent-yellow); margin:8px 0; }
-    .review-count { font-size:13px; color:var(--text-sub); }
-    .review-bars { margin-top:16px; }
-    .review-bar-row {
-      display:flex; align-items:center; gap:8px; margin-bottom:6px;
-    }
-    .review-bar-row span:first-child { font-size:12px; color:var(--text-sub); width:24px; text-align:right; }
-    .review-bar {
-      flex:1; height:8px; background:var(--bg);
-      border-radius:4px; overflow:hidden;
-    }
-    .review-bar-fill { height:100%; background:var(--accent-yellow); border-radius:4px; }
-    .review-bar-row span:last-child { font-size:12px; color:var(--text-light); width:30px; }
-
-    .review-item {
-      padding:16px 20px; border-bottom:1px solid var(--border);
-    }
-    .review-item:last-child { border-bottom:none; }
-    .review-item-header {
-      display:flex; align-items:center; gap:10px; margin-bottom:8px;
-    }
+    .review-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; }
+    .reviewer { display: flex; align-items: center; gap: 8px; }
     .reviewer-avatar {
-      width:36px; height:36px; border-radius:50%;
-      background:var(--primary-light);
-      display:flex; align-items:center; justify-content:center;
-      font-size:16px;
+      width: 32px; height: 32px; border-radius: 50%;
+      background: var(--primary-light); display: flex; align-items: center; justify-content: center;
+      font-size: 16px;
     }
-    .reviewer-info { flex:1; }
-    .reviewer-info .name { font-size:14px; font-weight:600; }
-    .reviewer-info .date { font-size:12px; color:var(--text-light); }
-    .review-item-stars { font-size:13px; color:var(--accent-yellow); margin-bottom:6px; }
-    .review-item-text { font-size:14px; line-height:1.6; color:var(--text-sub); }
-    .review-item-tags { display:flex; gap:6px; margin-top:8px; flex-wrap:wrap; }
-    .review-tag {
-      padding:4px 10px; border-radius:12px; font-size:11px;
-      background:var(--bg); color:var(--text-sub); font-weight:500;
-    }
-    .review-helpful {
-      display:flex; align-items:center; gap:6px;
-      margin-top:10px; font-size:12px; color:var(--text-light);
-    }
-    .review-helpful button {
-      border:none; background:none; cursor:pointer;
-      font-size:12px; color:var(--text-light); font-family:inherit;
-      display:flex; align-items:center; gap:4px;
-    }
-    .review-helpful button:hover { color:var(--primary); }
+    .reviewer-name { font-size: 14px; font-weight: 700; color: var(--text); }
+    .reviewer-date { font-size: 11px; color: var(--text-light); }
+    .review-stars { display: flex; gap: 2px; }
+    .review-stars i { font-size: 13px; color: var(--accent-yellow); }
+    .review-text { font-size: 13px; color: var(--text-sub); line-height: 1.6; }
+    .review-pet-tag { display: inline-block; font-size: 11px; padding: 2px 8px; border-radius: 6px; background: var(--secondary-light); color: var(--secondary); font-weight: 600; margin-top: 6px; }
 
-    /* Write Review Modal */
+    /* ── FUNERAL ── */
+    .funeral-header {
+      background: linear-gradient(135deg, #2C3E50, #4A5568);
+      padding: 24px 20px;
+    }
+    .funeral-title { font-size: 20px; font-weight: 800; color: #fff; }
+    .funeral-sub { font-size: 13px; color: rgba(255,255,255,0.7); margin-top: 4px; }
+
+    .service-card {
+      background: var(--card); border-radius: 18px; padding: 20px;
+      margin-bottom: 14px; box-shadow: 0 2px 12px rgba(0,0,0,0.07);
+      cursor: pointer; transition: transform .15s; border: 2px solid transparent;
+    }
+    .service-card:active { transform: scale(0.98); }
+    .service-card.selected { border-color: var(--primary); }
+    .service-icon-row { display: flex; align-items: center; gap: 12px; margin-bottom: 12px; }
+    .service-icon {
+      width: 52px; height: 52px; border-radius: 16px;
+      display: flex; align-items: center; justify-content: center; font-size: 28px;
+    }
+    .service-name { font-size: 17px; font-weight: 800; color: var(--text); }
+    .service-desc { font-size: 13px; color: var(--text-sub); margin-top: 2px; }
+    .price-table { margin-top: 12px; }
+    .price-row { display: flex; justify-content: space-between; align-items: center; padding: 8px 0; border-bottom: 1px solid var(--border); }
+    .price-row:last-child { border-bottom: none; }
+    .price-label { font-size: 13px; color: var(--text-sub); }
+    .price-value { font-size: 14px; font-weight: 700; color: var(--text); }
+    .price-value.highlight { color: var(--primary); }
+    .funeral-notice {
+      background: #FFF8E1; border-radius: 12px; padding: 12px 14px;
+      margin: 0 20px 20px;
+      border-left: 3px solid var(--accent-yellow);
+    }
+    .funeral-notice p { font-size: 12px; color: var(--text-sub); line-height: 1.6; }
+
+    /* ── SHOP ── */
+    .shop-search {
+      display: flex; align-items: center; gap: 10px;
+      background: var(--card); margin: 0 20px 16px;
+      border: 1.5px solid var(--border); border-radius: 14px; padding: 12px 16px;
+    }
+    .shop-search i { font-size: 16px; color: var(--primary); }
+    .shop-search input {
+      flex: 1; border: none; outline: none; font-size: 14px;
+      font-family: 'Noto Sans KR', sans-serif; color: var(--text); background: transparent;
+    }
+    .shop-cats { display: flex; gap: 8px; padding: 0 20px 16px; overflow-x: auto; flex-shrink: 0; }
+    .shop-cats::-webkit-scrollbar { display: none; }
+    .product-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; padding: 0 20px 20px; }
+    .product-card {
+      background: var(--card); border-radius: 16px;
+      box-shadow: 0 2px 12px rgba(0,0,0,0.07);
+      overflow: hidden; cursor: pointer; transition: transform .15s;
+    }
+    .product-card:active { transform: scale(0.97); }
+    .product-img {
+      height: 130px; background: var(--bg);
+      display: flex; align-items: center; justify-content: center; font-size: 56px;
+      position: relative;
+    }
+    .product-badge {
+      position: absolute; top: 8px; left: 8px;
+      padding: 3px 8px; border-radius: 6px; font-size: 11px; font-weight: 700;
+    }
+    .badge-sale { background: var(--secondary); color: #fff; }
+    .badge-new  { background: var(--accent-green); color: #fff; }
+    .badge-hot  { background: var(--accent-yellow); color: #fff; }
+    .product-info { padding: 12px; }
+    .product-brand { font-size: 11px; color: var(--primary); font-weight: 600; }
+    .product-name { font-size: 13px; font-weight: 700; color: var(--text); margin-top: 2px; line-height: 1.3; }
+    .product-price-row { display: flex; align-items: center; gap: 6px; margin-top: 6px; }
+    .product-price { font-size: 15px; font-weight: 800; color: var(--text); }
+    .product-original { font-size: 12px; color: var(--text-light); text-decoration: line-through; }
+    .product-add-btn {
+      width: 28px; height: 28px; border-radius: 8px; background: var(--primary);
+      border: none; color: #fff; font-size: 16px; cursor: pointer;
+      display: flex; align-items: center; justify-content: center; margin-left: auto;
+      margin-top: 4px;
+    }
+    .cart-badge {
+      position: absolute; top: -4px; right: -4px;
+      width: 16px; height: 16px; border-radius: 50%;
+      background: var(--secondary); font-size: 10px; font-weight: 800; color: #fff;
+      display: flex; align-items: center; justify-content: center;
+    }
+
+    /* ── REVIEW MODAL ── */
     .modal-overlay {
-      position:absolute; inset:0;
-      background:rgba(0,0,0,0.5);
-      z-index:200; display:none;
-      align-items:flex-end; justify-content:center;
+      position: absolute; inset: 0;
+      background: rgba(0,0,0,0.55); z-index: 2000;
+      display: none; align-items: flex-end;
     }
-    .modal-overlay.active { display:flex; }
+    .modal-overlay.active { display: flex; }
     .modal-sheet {
-      width:100%; max-height:85%;
-      background:var(--card); border-radius:24px 24px 0 0;
-      padding:20px; overflow-y:auto;
-      animation: slideUp .3s ease;
-    }
-    @keyframes slideUp {
-      from { transform:translateY(100%); }
-      to { transform:translateY(0); }
+      width: 100%; background: var(--card);
+      border-radius: 24px 24px 0 0; padding: 24px 20px 32px;
+      max-height: 90%; overflow-y: auto;
     }
     .modal-handle {
-      width:40px; height:4px; background:var(--border);
-      border-radius:2px; margin:0 auto 16px;
+      width: 40px; height: 4px; border-radius: 2px; background: var(--border);
+      margin: 0 auto 20px;
     }
-    .modal-sheet h3 { font-size:18px; font-weight:700; margin-bottom:16px; }
-    .star-rating {
-      display:flex; gap:8px; justify-content:center; margin:16px 0;
-    }
-    .star-rating i {
-      font-size:32px; color:var(--border); cursor:pointer;
-      transition:.2s;
-    }
-    .star-rating i.active { color:var(--accent-yellow); }
+    .modal-title { font-size: 18px; font-weight: 800; color: var(--text); margin-bottom: 20px; }
+    .star-selector { display: flex; gap: 8px; justify-content: center; margin-bottom: 20px; }
+    .star-btn { font-size: 36px; cursor: pointer; transition: transform .15s; }
+    .star-btn.active { transform: scale(1.1); }
     .review-textarea {
-      width:100%; min-height:120px; padding:14px;
-      border:1.5px solid var(--border); border-radius:var(--radius-xs);
-      font-family:inherit; font-size:14px; resize:vertical;
-      color:var(--text);
+      width: 100%; height: 120px; border: 1.5px solid var(--border);
+      border-radius: 14px; padding: 14px; font-size: 14px;
+      font-family: 'Noto Sans KR', sans-serif; resize: none; outline: none;
+      color: var(--text); transition: border-color .15s;
     }
-    .review-textarea:focus { outline:none; border-color:var(--primary); }
-    .review-tag-select {
-      display:flex; flex-wrap:wrap; gap:8px; margin:12px 0;
+    .review-textarea:focus { border-color: var(--primary); }
+    .pet-select-label { font-size: 14px; font-weight: 600; color: var(--text); margin: 14px 0 8px; }
+    .pet-radio-group { display: flex; gap: 8px; flex-wrap: wrap; }
+    .pet-radio {
+      padding: 7px 14px; border-radius: 20px; border: 1.5px solid var(--border);
+      font-size: 13px; font-weight: 600; color: var(--text-sub);
+      cursor: pointer; transition: all .15s;
     }
-    .review-tag-option {
-      padding:8px 14px; border-radius:20px;
-      border:1.5px solid var(--border);
-      background:var(--card); font-size:13px;
-      cursor:pointer; font-family:inherit;
-      color:var(--text-sub); transition:.2s;
+    .pet-radio.selected { border-color: var(--primary); background: var(--primary-light); color: var(--primary); }
+    .submit-review-btn {
+      width: 100%; padding: 16px; border-radius: 16px; border: none;
+      background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+      color: #fff; font-size: 16px; font-weight: 700; cursor: pointer; margin-top: 20px;
+      transition: opacity .15s;
     }
-    .review-tag-option.selected {
-      border-color:var(--primary);
-      background:var(--primary-light);
-      color:var(--primary);
+    .submit-review-btn:active { opacity: 0.85; }
+
+    /* ── CART MODAL ── */
+    .cart-item { display: flex; gap: 12px; align-items: center; padding: 12px 0; border-bottom: 1px solid var(--border); }
+    .cart-item-img { width: 50px; height: 50px; border-radius: 12px; background: var(--bg); display: flex; align-items: center; justify-content: center; font-size: 26px; }
+    .cart-item-info { flex: 1; }
+    .cart-item-name { font-size: 14px; font-weight: 600; color: var(--text); }
+    .cart-item-price { font-size: 14px; font-weight: 800; color: var(--primary); }
+    .cart-qty { display: flex; align-items: center; gap: 8px; }
+    .cart-qty-btn { width: 26px; height: 26px; border-radius: 8px; border: 1px solid var(--border); background: none; font-size: 14px; cursor: pointer; }
+    .cart-qty-num { font-size: 14px; font-weight: 700; color: var(--text); min-width: 20px; text-align: center; }
+    .cart-total { display: flex; justify-content: space-between; align-items: center; padding: 16px 0 0; }
+    .cart-total-label { font-size: 15px; font-weight: 700; color: var(--text-sub); }
+    .cart-total-price { font-size: 20px; font-weight: 800; color: var(--primary); }
+    .checkout-btn {
+      width: 100%; padding: 16px; border-radius: 16px; border: none;
+      background: linear-gradient(135deg, var(--secondary), #FF9800);
+      color: #fff; font-size: 16px; font-weight: 700; cursor: pointer; margin-top: 16px;
     }
 
-    /* ── FUNERAL CARE ── */
-    .funeral-hero {
-      background: linear-gradient(135deg, #5C6B73 0%, #3A4750 100%);
-      padding:32px 20px; color:#fff; text-align:center;
+    /* Common UI */
+    .btn-full {
+      width: 100%; padding: 16px; border-radius: 16px; border: none;
+      background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+      color: #fff; font-size: 16px; font-weight: 700; cursor: pointer;
+      transition: opacity .15s;
     }
-    .funeral-hero i { font-size:36px; margin-bottom:12px; opacity:0.9; }
-    .funeral-hero h2 { font-size:20px; font-weight:700; margin-bottom:6px; }
-    .funeral-hero p { font-size:14px; opacity:0.85; line-height:1.6; }
+    .btn-full:active { opacity: 0.85; }
+    .empty-state { display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 48px 20px; gap: 12px; }
+    .empty-state i { font-size: 56px; color: var(--border); }
+    .empty-state p { font-size: 15px; color: var(--text-light); text-align: center; line-height: 1.5; }
 
-    .funeral-steps {
-      padding:20px;
+    /* Booking success */
+    .booking-success {
+      flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center;
+      padding: 40px 24px; text-align: center;
     }
-    .funeral-step {
-      display:flex; gap:14px; margin-bottom:20px;
-      position:relative;
+    .success-icon {
+      width: 88px; height: 88px; border-radius: 50%;
+      background: linear-gradient(135deg, var(--accent-green), #2ECC71);
+      display: flex; align-items: center; justify-content: center; font-size: 40px;
+      margin-bottom: 20px; box-shadow: 0 8px 32px rgba(76,175,130,0.35);
     }
-    .funeral-step-num {
-      width:36px; height:36px; border-radius:50%;
-      background:var(--funeral-warm); color:#fff;
-      display:flex; align-items:center; justify-content:center;
-      font-size:14px; font-weight:700; flex-shrink:0;
-      z-index:1;
+    .success-title { font-size: 24px; font-weight: 800; color: var(--text); }
+    .success-sub { font-size: 14px; color: var(--text-sub); margin-top: 8px; line-height: 1.6; }
+    .success-card {
+      width: 100%; background: var(--primary-light); border-radius: 16px;
+      padding: 18px; margin: 24px 0; text-align: left;
     }
-    .funeral-step::before {
-      content:''; position:absolute;
-      left:17px; top:36px; bottom:-4px;
-      width:2px; background:var(--border);
-    }
-    .funeral-step:last-child::before { display:none; }
-    .funeral-step-content {
-      flex:1; background:var(--card);
-      border-radius:var(--radius-sm); padding:16px;
-      box-shadow:var(--shadow);
-    }
-    .funeral-step-content h4 { font-size:15px; font-weight:600; margin-bottom:6px; }
-    .funeral-step-content p { font-size:13px; color:var(--text-sub); line-height:1.6; }
+    .success-row { display: flex; justify-content: space-between; padding: 6px 0; }
+    .success-key { font-size: 13px; color: var(--text-sub); }
+    .success-val { font-size: 13px; font-weight: 700; color: var(--text); }
 
-    .memorial-section {
-      margin:0 20px 16px; background:var(--card);
-      border-radius:var(--radius); padding:20px;
-      box-shadow:var(--shadow);
-    }
-    .memorial-section h3 {
-      font-size:16px; font-weight:700; margin-bottom:14px;
-      display:flex; align-items:center; gap:8px;
-    }
-    .memorial-card {
-      background:var(--funeral-light); border-radius:var(--radius-xs);
-      padding:16px; margin-bottom:10px;
-      border-left:4px solid var(--funeral-warm);
-    }
-    .memorial-card h4 { font-size:14px; font-weight:600; margin-bottom:4px; }
-    .memorial-card p { font-size:13px; color:var(--text-sub); line-height:1.5; }
-    .memorial-card .price-range {
-      font-size:14px; font-weight:700; color:var(--funeral-warm);
-      margin-top:8px;
-    }
-
-    .grief-support {
-      margin:0 20px 16px; background:linear-gradient(135deg, #FFF8E1, #FFF3E0);
-      border-radius:var(--radius); padding:20px;
-      box-shadow:var(--shadow);
-    }
-    .grief-support h3 {
-      font-size:16px; font-weight:700; margin-bottom:10px;
-      display:flex; align-items:center; gap:8px;
-    }
-    .grief-support p { font-size:13px; color:var(--text-sub); line-height:1.6; margin-bottom:12px; }
-    .grief-contact {
-      display:flex; gap:8px;
-    }
-    .grief-contact button {
-      flex:1; padding:12px; border:none; border-radius:var(--radius-xs);
-      font-family:inherit; font-size:13px; font-weight:600;
-      cursor:pointer; display:flex; align-items:center;
-      justify-content:center; gap:6px;
-    }
-
-    /* ── FUNERAL HALL FIND ── */
-    .funeral-hall-map {
-      height:200px;
-      background:linear-gradient(135deg, #E8E0D8 0%, #D7CFC7 100%);
-      position:relative; overflow:hidden;
-    }
-    .funeral-hall-map .map-overlay i { color:var(--funeral-warm); }
-
-    .funeral-hall-card {
-      margin:12px 20px; background:var(--card);
-      border-radius:var(--radius); box-shadow:var(--shadow);
-      overflow:hidden;
-    }
-    .funeral-hall-info {
-      padding:16px; display:flex; gap:14px;
-    }
-    .funeral-hall-thumb {
-      width:64px; height:64px; border-radius:var(--radius-sm);
-      background:var(--funeral-light);
-      display:flex; align-items:center; justify-content:center;
-      font-size:24px; flex-shrink:0;
-    }
-    .funeral-hall-detail { flex:1; }
-    .funeral-hall-detail h3 { font-size:15px; font-weight:600; margin-bottom:4px; }
-    .funeral-hall-meta {
-      font-size:12px; color:var(--text-sub); margin-bottom:6px;
-      display:flex; flex-direction:column; gap:3px;
-    }
-    .funeral-hall-meta span { display:flex; align-items:center; gap:6px; }
-    .funeral-hall-services {
-      display:flex; gap:6px; flex-wrap:wrap;
-      padding:0 16px 12px;
-    }
-    .funeral-hall-services .tag {
-      padding:4px 10px; border-radius:12px; font-size:11px;
-      font-weight:500;
-    }
-    .funeral-hall-actions {
-      display:flex; border-top:1px solid var(--border);
-    }
-    .funeral-hall-actions button {
-      flex:1; padding:12px; border:none; background:none;
-      font-family:inherit; font-size:13px; font-weight:600;
-      cursor:pointer; display:flex; align-items:center;
-      justify-content:center; gap:6px;
-    }
-    .funeral-hall-actions button:first-child { border-right:1px solid var(--border); }
-
-    /* ── Animations ── */
-    @keyframes fadeInUp {
-      from { opacity:0; transform:translateY(20px); }
-      to { opacity:1; transform:translateY(0); }
-    }
-    .anim-item { animation: fadeInUp .4s ease both; }
-
-    /* ── Toast ── */
+    /* Toast */
     .toast {
-      position:absolute; bottom:100px; left:50%;
-      transform:translateX(-50%);
-      background:var(--text); color:#fff;
-      padding:12px 24px; border-radius:24px;
-      font-size:14px; font-weight:500;
-      z-index:300; opacity:0; transition:.3s;
-      pointer-events:none; white-space:nowrap;
+      position: absolute; bottom: 80px; left: 50%; transform: translateX(-50%);
+      background: rgba(26,26,46,0.9); color: #fff; padding: 10px 20px;
+      border-radius: 20px; font-size: 14px; font-weight: 500;
+      z-index: 3000; white-space: nowrap; opacity: 0;
+      transition: opacity .3s; pointer-events: none;
     }
-    .toast.show { opacity:1; }
+    .toast.show { opacity: 1; }
+
+    /* Funeral booking form */
+    .form-group { margin-bottom: 16px; }
+    .form-label { font-size: 13px; font-weight: 700; color: var(--text); margin-bottom: 6px; display: block; }
+    .form-input {
+      width: 100%; padding: 12px 14px; border: 1.5px solid var(--border);
+      border-radius: 12px; font-size: 14px; font-family: 'Noto Sans KR', sans-serif;
+      color: var(--text); outline: none; background: var(--card); transition: border-color .15s;
+    }
+    .form-input:focus { border-color: var(--primary); }
+    .form-select {
+      width: 100%; padding: 12px 14px; border: 1.5px solid var(--border);
+      border-radius: 12px; font-size: 14px; font-family: 'Noto Sans KR', sans-serif;
+      color: var(--text); background: var(--card); outline: none; appearance: none;
+      cursor: pointer;
+    }
+    .section-bg-card {
+      background: var(--card); border-radius: 20px; padding: 20px;
+      margin: 0 20px 16px; box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+    }
+
+    /* Animations */
+    @keyframes fadeInUp {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    .fade-in-up { animation: fadeInUp .35s ease forwards; }
+    @keyframes pulse { 0%,100%{transform:scale(1)} 50%{transform:scale(1.05)} }
+    .pulse { animation: pulse 2s infinite; }
   </style>
 </head>
 <body>
+<div id="app">
 
-<div class="phone-frame" id="app">
-
-  <!-- ====== SPLASH ====== -->
-  <div class="screen active" id="splash">
-    <div class="splash-content">
-      <div class="splash-logo">🐾</div>
-      <h1>펫호</h1>
-      <p>이색반려동물 진료 원스톱 서비스</p>
+  <!-- ===================== SPLASH ===================== -->
+  <div id="screen-splash" class="screen active">
+    <div class="splash-inner">
+      <div class="splash-logo-wrap">
+        <i class="fas fa-paw"></i>
+      </div>
+      <div class="splash-title">펫호</div>
+      <div class="splash-subtitle">반려동물 진료 원스톱 서비스<br>강아지부터 이색동물까지 모두 케어</div>
+      <div class="splash-pets">
+        <span class="pet-chip">🐶 강아지</span>
+        <span class="pet-chip">🐱 고양이</span>
+        <span class="pet-chip exotic">🦜 이색동물 전문</span>
+        <span class="pet-chip">🐰 토끼</span>
+        <span class="pet-chip">🦎 파충류</span>
+        <span class="pet-chip">🐠 물고기</span>
+        <span class="pet-chip">🐹 소동물</span>
+      </div>
       <div class="splash-btns">
-        <button class="btn-white" onclick="goScreen('home')">시작하기</button>
-        <button class="btn-ghost" onclick="goScreen('home')">둘러보기</button>
+        <button class="btn-splash-primary" onclick="goScreen('home')">시작하기</button>
+        <button class="btn-splash-secondary" onclick="goScreen('home')">둘러보기</button>
       </div>
     </div>
   </div>
 
-  <!-- ====== HOME ====== -->
-  <div class="screen" id="home">
+  <!-- ===================== HOME ===================== -->
+  <div id="screen-home" class="screen">
     <div class="home-header">
-      <p class="home-greeting">안녕하세요 👋 <strong>펫호 회원</strong>님</p>
-      <div class="home-search">
-        <input type="text" placeholder="병원, 증상, 동물 검색..." />
-        <button><i class="fas fa-search"></i></button>
+      <div class="home-header-row">
+        <div>
+          <div class="home-greeting">안녕하세요 👋</div>
+          <div class="home-name">반려인 님</div>
+        </div>
+        <div class="home-notif">
+          <i class="fas fa-bell"></i>
+          <div class="notif-dot"></div>
+        </div>
+      </div>
+      <div class="home-search" onclick="goScreen('find')">
+        <i class="fas fa-search"></i>
+        <span>병원, 동물 종류 검색...</span>
       </div>
     </div>
     <div class="scroll-content">
-      <!-- Quick Menu -->
       <div class="quick-menu">
-        <button class="quick-item" onclick="goScreen('find')">
-          <div class="quick-icon" style="background:#E8F4FF;color:var(--primary);">🏥</div>
-          <span>병원찾기</span>
-        </button>
-        <button class="quick-item" onclick="goScreen('booking')">
-          <div class="quick-icon" style="background:#FFF0EB;color:var(--secondary);">📅</div>
-          <span>진료예약</span>
-        </button>
-        <button class="quick-item" onclick="goScreen('insurance')">
-          <div class="quick-icon" style="background:#F3E8FF;color:var(--accent-purple);">🛡️</div>
-          <span>펫보험</span>
-        </button>
-        <button class="quick-item" onclick="goScreen('funeral')">
-          <div class="quick-icon" style="background:#F5F0EB;color:var(--funeral-warm);">🕊️</div>
-          <span>장례케어</span>
-        </button>
-        <button class="quick-item" onclick="goScreen('mypet')">
-          <div class="quick-icon" style="background:#E8F5E9;color:var(--accent-green);">🐹</div>
-          <span>내 반려동물</span>
-        </button>
-        <button class="quick-item" onclick="goScreen('records')">
-          <div class="quick-icon" style="background:#FFF8E1;color:var(--accent-yellow);">📋</div>
-          <span>진료기록</span>
-        </button>
-        <button class="quick-item" onclick="goScreen('review')">
-          <div class="quick-icon" style="background:#E8F4FF;color:var(--primary);">⭐</div>
-          <span>병원후기</span>
-        </button>
-        <button class="quick-item" onclick="goScreen('funeralHall')">
-          <div class="quick-icon" style="background:#F5F0EB;color:var(--funeral-warm);">🏛️</div>
-          <span>장례식장</span>
-        </button>
-      </div>
-
-      <!-- Banner -->
-      <div class="banner-slider" id="bannerSlider">
-        <div class="banner-slide active" style="background:linear-gradient(135deg,#4D9FEC,#2B7DD4);">
-          <h3>이색반려동물 전문 진료</h3>
-          <p>파충류·조류·소동물 전문 수의사 연결</p>
+        <div class="quick-item" onclick="goScreen('find')">
+          <div class="quick-icon qi-blue"><i class="fas fa-hospital"></i></div>
+          <div class="quick-label">병원찾기</div>
         </div>
-        <div class="banner-slide" style="background:linear-gradient(135deg,#FF7043,#E64A19);">
-          <h3>🛡️ 펫보험 가입 안내</h3>
-          <p>월 9,900원부터! 우리 아이 건강 지키기</p>
+        <div class="quick-item" onclick="goScreen('booking')">
+          <div class="quick-icon qi-orange"><i class="fas fa-calendar-check"></i></div>
+          <div class="quick-label">진료예약</div>
         </div>
-        <div class="banner-slide" style="background:linear-gradient(135deg,#9C6FE4,#7C4DFF);">
-          <h3>첫 예약 20% 할인</h3>
-          <p>앱 전용 특별 할인 이벤트 진행 중</p>
+        <div class="quick-item" onclick="goScreen('shop')">
+          <div class="quick-icon qi-green"><i class="fas fa-shopping-bag"></i></div>
+          <div class="quick-label">용품쇼핑</div>
         </div>
-        <div class="banner-slide" style="background:linear-gradient(135deg,#5C6B73,#3A4750);">
-          <h3>🕊️ 반려동물 장례 서비스</h3>
-          <p>소중한 이별, 따뜻하게 함께합니다</p>
+        <div class="quick-item" onclick="goScreen('funeral')">
+          <div class="quick-icon qi-purple"><i class="fas fa-dove"></i></div>
+          <div class="quick-label">장례서비스</div>
         </div>
-        <div class="banner-dots">
-          <div class="banner-dot active"></div>
-          <div class="banner-dot"></div>
-          <div class="banner-dot"></div>
-          <div class="banner-dot"></div>
+        <div class="quick-item" onclick="goScreen('records')">
+          <div class="quick-icon qi-yellow"><i class="fas fa-file-medical"></i></div>
+          <div class="quick-label">진료기록</div>
         </div>
       </div>
 
-      <!-- Nearby Hospitals -->
-      <div class="section-title">
-        <h2>가까운 병원 🏥</h2>
-        <button class="more" onclick="goScreen('find')">더보기</button>
-      </div>
-      <div class="card">
-        <div class="hospital-card" onclick="goScreen('detail')">
-          <div class="hospital-thumb">🦎</div>
-          <div class="hospital-info">
-            <h3>리틀펫 동물병원</h3>
-            <div class="hospital-meta">
-              <span class="star">★ 4.8</span>
-              <span>· 350m</span>
-              <span>· 진료중</span>
-            </div>
-            <div class="hospital-tags">
-              <span class="hospital-tag">파충류</span>
-              <span class="hospital-tag">양서류</span>
-              <span class="hospital-tag">소동물</span>
-            </div>
-          </div>
+      <!-- 이색동물 배너 -->
+      <div class="exotic-banner" onclick="goScreen('find')">
+        <div class="exotic-icon">🦜</div>
+        <div class="exotic-text">
+          <div class="exotic-tag">✨ 이색동물 전문</div>
+          <div class="exotic-title">파충류·조류·소동물 전문 케어</div>
+          <div class="exotic-sub">희귀동물 전문의가 직접 진료합니다</div>
         </div>
       </div>
-      <div class="card">
-        <div class="hospital-card" onclick="goScreen('detail')">
-          <div class="hospital-thumb">🐦</div>
-          <div class="hospital-info">
-            <h3>에비앤 조류병원</h3>
-            <div class="hospital-meta">
-              <span class="star">★ 4.6</span>
-              <span>· 1.2km</span>
-              <span>· 진료중</span>
-            </div>
-            <div class="hospital-tags">
-              <span class="hospital-tag">앵무새</span>
-              <span class="hospital-tag">카나리아</span>
-            </div>
+
+      <div class="banner-wrap" style="margin-top:16px">
+        <div class="banner" onclick="goScreen('booking')">
+          <div class="banner-text">
+            <div class="banner-tag">🎉 이벤트</div>
+            <div class="banner-title">첫 진료 예약 시<br>검진비 30% 할인</div>
+            <div class="banner-sub">강아지·고양이·이색동물 모두 적용</div>
           </div>
+          <div class="banner-emoji">🏥</div>
         </div>
       </div>
-      <div class="card">
-        <div class="hospital-card" onclick="goScreen('detail')">
-          <div class="hospital-thumb">🐹</div>
-          <div class="hospital-info">
-            <h3>해밀 소동물 클리닉</h3>
-            <div class="hospital-meta">
-              <span class="star">★ 4.9</span>
-              <span>· 2.0km</span>
-              <span>· 오후 6시 마감</span>
+
+      <div class="section" style="margin-top:16px">
+        <div class="section-header">
+          <div class="section-title">가까운 병원</div>
+          <div class="section-more" onclick="goScreen('find')">전체보기</div>
+        </div>
+      </div>
+      <div class="hospital-list">
+        <div class="hospital-card" onclick="openDetail(0)">
+          <div class="hcard-top">
+            <div class="hcard-img">🏥</div>
+            <div class="hcard-info">
+              <div class="hcard-name">한강로 펫 동물병원</div>
+              <div class="hcard-tags">
+                <span class="htag htag-blue">🐶 강아지</span>
+                <span class="htag htag-blue">🐱 고양이</span>
+                <span class="htag htag-purple">🦜 이색동물</span>
+              </div>
             </div>
-            <div class="hospital-tags">
-              <span class="hospital-tag">햄스터</span>
-              <span class="hospital-tag">기니피그</span>
-              <span class="hospital-tag">토끼</span>
+          </div>
+          <div class="hcard-meta">
+            <div class="hcard-dist"><i class="fas fa-location-dot" style="color:var(--primary);margin-right:3px"></i>0.4km</div>
+            <div class="hcard-rating"><i class="fas fa-star"></i><span>4.8 (234)</span></div>
+            <div class="hcard-open open-yes">영업중</div>
+          </div>
+          <div class="hcard-bottom">
+            <button class="hcard-btn hcard-btn-outline" onclick="event.stopPropagation();openDetail(0)">상세보기</button>
+            <button class="hcard-btn hcard-btn-primary" onclick="event.stopPropagation();goScreen('booking')">예약하기</button>
+          </div>
+        </div>
+        <div class="hospital-card" onclick="openDetail(1)">
+          <div class="hcard-top">
+            <div class="hcard-img">🐾</div>
+            <div class="hcard-info">
+              <div class="hcard-name">이색동물 전문 케어센터</div>
+              <div class="hcard-tags">
+                <span class="htag htag-orange">🦎 파충류</span>
+                <span class="htag htag-purple">🦜 조류</span>
+                <span class="htag htag-green">🐰 소동물</span>
+              </div>
             </div>
+          </div>
+          <div class="hcard-meta">
+            <div class="hcard-dist"><i class="fas fa-location-dot" style="color:var(--primary);margin-right:3px"></i>0.8km</div>
+            <div class="hcard-rating"><i class="fas fa-star"></i><span>4.9 (312)</span></div>
+            <div class="hcard-open open-yes">영업중</div>
+          </div>
+          <div class="hcard-bottom">
+            <button class="hcard-btn hcard-btn-outline" onclick="event.stopPropagation();openDetail(1)">상세보기</button>
+            <button class="hcard-btn hcard-btn-primary" onclick="event.stopPropagation();goScreen('booking')">예약하기</button>
+          </div>
+        </div>
+        <div class="hospital-card" onclick="openDetail(2)">
+          <div class="hcard-top">
+            <div class="hcard-img">🌟</div>
+            <div class="hcard-info">
+              <div class="hcard-name">24시 프리미엄 동물의료원</div>
+              <div class="hcard-tags">
+                <span class="htag htag-blue">🐶 강아지</span>
+                <span class="htag htag-blue">🐱 고양이</span>
+                <span class="htag htag-orange">응급24시</span>
+              </div>
+            </div>
+          </div>
+          <div class="hcard-meta">
+            <div class="hcard-dist"><i class="fas fa-location-dot" style="color:var(--primary);margin-right:3px"></i>1.2km</div>
+            <div class="hcard-rating"><i class="fas fa-star"></i><span>4.7 (189)</span></div>
+            <div class="hcard-open open-yes">24시간</div>
+          </div>
+          <div class="hcard-bottom">
+            <button class="hcard-btn hcard-btn-outline" onclick="event.stopPropagation();openDetail(2)">상세보기</button>
+            <button class="hcard-btn hcard-btn-primary" onclick="event.stopPropagation();goScreen('booking')">예약하기</button>
           </div>
         </div>
       </div>
     </div>
-    <div class="bottom-nav" id="mainNav">
-      <button class="nav-item active" onclick="goScreen('home')"><i class="fas fa-home"></i><span>홈</span></button>
-      <button class="nav-item" onclick="goScreen('find')"><i class="fas fa-search"></i><span>병원찾기</span></button>
-      <button class="nav-fab" onclick="goScreen('booking')"><i class="fas fa-calendar-plus"></i></button>
-      <button class="nav-item" onclick="goScreen('mypet')"><i class="fas fa-paw"></i><span>내펫</span></button>
-      <button class="nav-item" onclick="goScreen('mypage')"><i class="fas fa-user"></i><span>마이</span></button>
-    </div>
+    <nav class="bottom-nav">
+      <div class="nav-item active" onclick="setNav('home')"><i class="fas fa-home"></i><span>홈</span></div>
+      <div class="nav-item" onclick="setNav('find')"><i class="fas fa-map-marker-alt"></i><span>병원찾기</span></div>
+      <div class="nav-fab" onclick="goScreen('booking')"><i class="fas fa-calendar-plus"></i><span>예약</span></div>
+      <div class="nav-item" onclick="setNav('mypet')"><i class="fas fa-paw"></i><span>내펫</span></div>
+      <div class="nav-item" onclick="setNav('mypage')"><i class="fas fa-user"></i><span>마이</span></div>
+    </nav>
   </div>
 
-  <!-- ====== FIND ====== -->
-  <div class="screen" id="find">
+  <!-- ===================== FIND ===================== -->
+  <div id="screen-find" class="screen">
     <div class="top-bar">
-      <button class="back-btn" onclick="goScreen('home')"><i class="fas fa-arrow-left"></i></button>
-      <h1>병원 찾기</h1>
-      <button class="icon-btn"><i class="fas fa-sliders-h"></i></button>
+      <div class="top-bar-title">병원 찾기</div>
+      <div class="top-bar-action"><i class="fas fa-sliders-h"></i></div>
     </div>
-    <div class="find-header">
-      <div class="find-search">
-        <input type="text" placeholder="병원명, 지역, 진료과목 검색" />
-        <button>검색</button>
+    <div class="map-area">
+      <div class="map-bg"></div>
+      <div class="map-road-h"></div>
+      <div class="map-road-v"></div>
+      <div class="map-marker active" style="left:37%;top:35%" onclick="selectMarker(0)">
+        <div class="map-marker-pin" style="background:var(--primary)"><i class="fas fa-paw"></i></div>
+        <div class="map-marker-label">한강로펫</div>
       </div>
+      <div class="map-marker" style="left:55%;top:52%" onclick="selectMarker(1)">
+        <div class="map-marker-pin" style="background:var(--accent-purple)"><i class="fas fa-star"></i></div>
+        <div class="map-marker-label">이색전문</div>
+      </div>
+      <div class="map-marker" style="left:25%;top:60%" onclick="selectMarker(2)">
+        <div class="map-marker-pin" style="background:var(--secondary)"><i class="fas fa-hospital"></i></div>
+        <div class="map-marker-label">24시의료</div>
+      </div>
+      <div class="map-marker" style="left:68%;top:28%" onclick="selectMarker(3)">
+        <div class="map-marker-pin" style="background:var(--accent-green)"><i class="fas fa-heart"></i></div>
+        <div class="map-marker-label">웰니스펫</div>
+      </div>
+      <div class="map-controls">
+        <div class="map-ctrl-btn"><i class="fas fa-plus"></i></div>
+        <div class="map-ctrl-btn"><i class="fas fa-minus"></i></div>
+        <div class="map-ctrl-btn"><i class="fas fa-crosshairs"></i></div>
+      </div>
+    </div>
+    <div class="filter-chips">
+      <div class="chip active" onclick="filterChip(this)"><i class="fas fa-th-large"></i> 전체</div>
+      <div class="chip" onclick="filterChip(this)">🐶 강아지</div>
+      <div class="chip" onclick="filterChip(this)">🐱 고양이</div>
+      <div class="chip" onclick="filterChip(this)">🦜 조류</div>
+      <div class="chip" onclick="filterChip(this)">🦎 파충류</div>
+      <div class="chip" onclick="filterChip(this)">🐰 소동물</div>
+      <div class="chip" onclick="filterChip(this)">🐠 어류</div>
+      <div class="chip" onclick="filterChip(this)">⚡ 응급24시</div>
+    </div>
+    <div class="scroll-content" style="padding-top:4px">
+      <div class="hospital-list" id="find-hospital-list">
+        <div class="hospital-card selected" onclick="openDetail(0)">
+          <div class="hcard-top">
+            <div class="hcard-img">🏥</div>
+            <div class="hcard-info">
+              <div class="hcard-name">한강로 펫 동물병원</div>
+              <div class="hcard-tags">
+                <span class="htag htag-blue">🐶 강아지</span>
+                <span class="htag htag-blue">🐱 고양이</span>
+                <span class="htag htag-purple">🦜 이색동물</span>
+              </div>
+            </div>
+          </div>
+          <div class="hcard-meta">
+            <div class="hcard-dist">0.4km</div>
+            <div class="hcard-rating"><i class="fas fa-star"></i><span>4.8 (234)</span></div>
+            <div class="hcard-open open-yes">영업중</div>
+          </div>
+          <div class="hcard-bottom">
+            <button class="hcard-btn hcard-btn-outline" onclick="event.stopPropagation();openDetail(0)">상세보기</button>
+            <button class="hcard-btn hcard-btn-primary" onclick="event.stopPropagation();goScreen('booking')">예약하기</button>
+          </div>
+        </div>
+        <div class="hospital-card" onclick="openDetail(1)">
+          <div class="hcard-top">
+            <div class="hcard-img">🐾</div>
+            <div class="hcard-info">
+              <div class="hcard-name">이색동물 전문 케어센터</div>
+              <div class="hcard-tags">
+                <span class="htag htag-orange">🦎 파충류 전문</span>
+                <span class="htag htag-purple">🦜 조류</span>
+                <span class="htag htag-green">🐰 소동물</span>
+              </div>
+            </div>
+          </div>
+          <div class="hcard-meta">
+            <div class="hcard-dist">0.8km</div>
+            <div class="hcard-rating"><i class="fas fa-star"></i><span>4.9 (312)</span></div>
+            <div class="hcard-open open-yes">영업중</div>
+          </div>
+          <div class="hcard-bottom">
+            <button class="hcard-btn hcard-btn-outline" onclick="event.stopPropagation();openDetail(1)">상세보기</button>
+            <button class="hcard-btn hcard-btn-primary" onclick="event.stopPropagation();goScreen('booking')">예약하기</button>
+          </div>
+        </div>
+        <div class="hospital-card" onclick="openDetail(2)">
+          <div class="hcard-top">
+            <div class="hcard-img">🌟</div>
+            <div class="hcard-info">
+              <div class="hcard-name">24시 프리미엄 동물의료원</div>
+              <div class="hcard-tags">
+                <span class="htag htag-blue">🐶 강아지</span>
+                <span class="htag htag-blue">🐱 고양이</span>
+                <span class="htag htag-orange">응급24시</span>
+              </div>
+            </div>
+          </div>
+          <div class="hcard-meta">
+            <div class="hcard-dist">1.2km</div>
+            <div class="hcard-rating"><i class="fas fa-star"></i><span>4.7 (189)</span></div>
+            <div class="hcard-open open-yes">24시간</div>
+          </div>
+          <div class="hcard-bottom">
+            <button class="hcard-btn hcard-btn-outline" onclick="event.stopPropagation();openDetail(2)">상세보기</button>
+            <button class="hcard-btn hcard-btn-primary" onclick="event.stopPropagation();goScreen('booking')">예약하기</button>
+          </div>
+        </div>
+        <div class="hospital-card" onclick="openDetail(3)">
+          <div class="hcard-top">
+            <div class="hcard-img">💚</div>
+            <div class="hcard-info">
+              <div class="hcard-name">웰니스펫 동물병원</div>
+              <div class="hcard-tags">
+                <span class="htag htag-green">🐠 어류 전문</span>
+                <span class="htag htag-purple">🐹 햄스터</span>
+                <span class="htag htag-blue">🐱 고양이</span>
+              </div>
+            </div>
+          </div>
+          <div class="hcard-meta">
+            <div class="hcard-dist">1.5km</div>
+            <div class="hcard-rating"><i class="fas fa-star"></i><span>4.6 (98)</span></div>
+            <div class="hcard-open open-no">영업종료</div>
+          </div>
+          <div class="hcard-bottom">
+            <button class="hcard-btn hcard-btn-outline" onclick="event.stopPropagation();openDetail(3)">상세보기</button>
+            <button class="hcard-btn hcard-btn-primary" onclick="event.stopPropagation();goScreen('booking')">예약하기</button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <nav class="bottom-nav">
+      <div class="nav-item" onclick="setNav('home')"><i class="fas fa-home"></i><span>홈</span></div>
+      <div class="nav-item active" onclick="setNav('find')"><i class="fas fa-map-marker-alt"></i><span>병원찾기</span></div>
+      <div class="nav-fab" onclick="goScreen('booking')"><i class="fas fa-calendar-plus"></i><span>예약</span></div>
+      <div class="nav-item" onclick="setNav('mypet')"><i class="fas fa-paw"></i><span>내펫</span></div>
+      <div class="nav-item" onclick="setNav('mypage')"><i class="fas fa-user"></i><span>마이</span></div>
+    </nav>
+  </div>
+
+  <!-- ===================== BOOKING ===================== -->
+  <div id="screen-booking" class="screen">
+    <div class="top-bar">
+      <div class="top-bar-back" onclick="goBack()"><i class="fas fa-arrow-left"></i></div>
+      <div class="top-bar-title">진료 예약</div>
+      <div style="width:36px"></div>
+    </div>
+    <div class="booking-steps">
+      <div class="step-item done" id="step1"><div class="step-num"><i class="fas fa-check" style="font-size:10px"></i></div><div class="step-label">병원선택</div></div>
+      <div class="step-item active" id="step2"><div class="step-num">2</div><div class="step-label">날짜선택</div></div>
+      <div class="step-item" id="step3"><div class="step-num">3</div><div class="step-label">시간선택</div></div>
+      <div class="step-item" id="step4"><div class="step-num">4</div><div class="step-label">예약확인</div></div>
     </div>
     <div class="scroll-content">
-      <div class="chip-row" style="padding-top:12px;">
-        <button class="chip active">전체</button>
-        <button class="chip">🦎 파충류</button>
-        <button class="chip">🐦 조류</button>
-        <button class="chip">🐹 소동물</button>
-        <button class="chip">🐠 어류</button>
-        <button class="chip">🕷️ 절지류</button>
-      </div>
-      <div class="map-container" style="margin-top:12px;">
-        <div class="map-markers">
-          <div class="map-marker active" style="top:40%;left:35%;"><i class="fas fa-plus"></i></div>
-          <div class="map-marker" style="top:25%;left:60%;"><i class="fas fa-plus"></i></div>
-          <div class="map-marker" style="top:60%;left:50%;"><i class="fas fa-plus"></i></div>
-          <div class="map-marker" style="top:55%;left:20%;"><i class="fas fa-plus"></i></div>
-        </div>
-        <div class="map-overlay">
-          <i class="fas fa-map-marked-alt"></i>
-          <span>지도 영역</span>
-        </div>
-      </div>
-      <div class="view-toggle">
-        <button class="active">지도 보기</button>
-        <button>목록 보기</button>
-      </div>
-      <div class="card">
-        <div class="hospital-card" onclick="goScreen('detail')">
-          <div class="hospital-thumb">🦎</div>
-          <div class="hospital-info">
-            <h3>리틀펫 동물병원</h3>
-            <div class="hospital-meta">
-              <span class="star">★ 4.8</span><span>· 350m</span><span>· 진료중</span>
-            </div>
-            <div class="hospital-tags">
-              <span class="hospital-tag">파충류</span>
-              <span class="hospital-tag">양서류</span>
+      <!-- Step 2: 날짜 선택 -->
+      <div id="booking-step2" class="booking-section">
+        <div class="booking-title">날짜를 선택해 주세요</div>
+        <div class="section-bg-card" style="margin:0 0 16px">
+          <div class="hcard-top">
+            <div class="hcard-img">🏥</div>
+            <div class="hcard-info">
+              <div class="hcard-name">한강로 펫 동물병원</div>
+              <div style="font-size:13px;color:var(--text-sub);margin-top:4px">일반진료 · 강아지/고양이/이색동물</div>
             </div>
           </div>
         </div>
+        <div class="calendar" id="booking-calendar"></div>
+        <button class="btn-full" style="margin-top:20px" onclick="bookingNext(3)">다음 단계</button>
       </div>
-      <div class="card">
-        <div class="hospital-card" onclick="goScreen('detail')">
-          <div class="hospital-thumb">🐦</div>
-          <div class="hospital-info">
-            <h3>에비앤 조류병원</h3>
-            <div class="hospital-meta">
-              <span class="star">★ 4.6</span><span>· 1.2km</span><span>· 진료중</span>
-            </div>
-            <div class="hospital-tags">
-              <span class="hospital-tag">앵무새</span>
-              <span class="hospital-tag">카나리아</span>
-            </div>
+
+      <!-- Step 3: 시간 선택 -->
+      <div id="booking-step3" class="booking-section" style="display:none">
+        <div class="booking-title">시간을 선택해 주세요</div>
+        <div style="font-size:14px;color:var(--text-sub);margin-bottom:16px">선택 날짜: <strong id="selected-date-text">-</strong></div>
+        <div class="time-grid" id="time-grid"></div>
+        <button class="btn-full" style="margin-top:24px" onclick="bookingNext(4)">다음 단계</button>
+      </div>
+
+      <!-- Step 4: 예약 확인 -->
+      <div id="booking-step4" class="booking-section" style="display:none">
+        <div class="booking-title">예약 정보 확인</div>
+        <div class="section-bg-card" style="margin:0 0 16px">
+          <div class="form-group">
+            <label class="form-label">반려동물 종류</label>
+            <select class="form-select" id="pet-type-select">
+              <option>🐶 강아지</option>
+              <option>🐱 고양이</option>
+              <option>🦜 앵무새 / 조류</option>
+              <option>🦎 파충류</option>
+              <option>🐰 토끼</option>
+              <option>🐹 햄스터</option>
+              <option>🐠 어류</option>
+              <option>기타 이색동물</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label class="form-label">반려동물 이름</label>
+            <input class="form-input" type="text" placeholder="예: 두부" id="pet-name-input" />
+          </div>
+          <div class="form-group">
+            <label class="form-label">증상 / 진료 목적</label>
+            <textarea class="form-input" style="height:80px;resize:none" placeholder="증상이나 진료 목적을 적어주세요"></textarea>
           </div>
         </div>
+        <div class="section-bg-card" style="margin:0 0 20px;background:var(--primary-light)">
+          <div class="success-row"><span class="success-key">병원</span><span class="success-val">한강로 펫 동물병원</span></div>
+          <div class="success-row"><span class="success-key">날짜</span><span class="success-val" id="confirm-date">-</span></div>
+          <div class="success-row"><span class="success-key">시간</span><span class="success-val" id="confirm-time">-</span></div>
+        </div>
+        <button class="btn-full" onclick="completeBooking()">예약 완료</button>
       </div>
-      <div class="card">
-        <div class="hospital-card" onclick="goScreen('detail')">
-          <div class="hospital-thumb">🐹</div>
-          <div class="hospital-info">
-            <h3>해밀 소동물 클리닉</h3>
-            <div class="hospital-meta">
-              <span class="star">★ 4.9</span><span>· 2.0km</span><span>· 진료중</span>
-            </div>
-            <div class="hospital-tags">
-              <span class="hospital-tag">햄스터</span>
-              <span class="hospital-tag">토끼</span>
-            </div>
+
+      <!-- Step 완료 -->
+      <div id="booking-success" style="display:none">
+        <div class="booking-success">
+          <div class="success-icon">✅</div>
+          <div class="success-title">예약 완료!</div>
+          <div class="success-sub">예약이 성공적으로 완료되었습니다.<br>진료 시간에 맞춰 방문해 주세요.</div>
+          <div class="success-card">
+            <div class="success-row"><span class="success-key">병원</span><span class="success-val">한강로 펫 동물병원</span></div>
+            <div class="success-row"><span class="success-key">날짜</span><span class="success-val" id="done-date">-</span></div>
+            <div class="success-row"><span class="success-key">시간</span><span class="success-val" id="done-time">-</span></div>
           </div>
+          <button class="btn-full" onclick="goScreen('home')">홈으로 돌아가기</button>
         </div>
       </div>
     </div>
-    <div class="bottom-nav">
-      <button class="nav-item" onclick="goScreen('home')"><i class="fas fa-home"></i><span>홈</span></button>
-      <button class="nav-item active" onclick="goScreen('find')"><i class="fas fa-search"></i><span>병원찾기</span></button>
-      <button class="nav-fab" onclick="goScreen('booking')"><i class="fas fa-calendar-plus"></i></button>
-      <button class="nav-item" onclick="goScreen('mypet')"><i class="fas fa-paw"></i><span>내펫</span></button>
-      <button class="nav-item" onclick="goScreen('mypage')"><i class="fas fa-user"></i><span>마이</span></button>
-    </div>
+    <nav class="bottom-nav">
+      <div class="nav-item" onclick="setNav('home')"><i class="fas fa-home"></i><span>홈</span></div>
+      <div class="nav-item" onclick="setNav('find')"><i class="fas fa-map-marker-alt"></i><span>병원찾기</span></div>
+      <div class="nav-fab active-fab" onclick="goScreen('booking')"><i class="fas fa-calendar-plus"></i><span>예약</span></div>
+      <div class="nav-item" onclick="setNav('mypet')"><i class="fas fa-paw"></i><span>내펫</span></div>
+      <div class="nav-item" onclick="setNav('mypage')"><i class="fas fa-user"></i><span>마이</span></div>
+    </nav>
   </div>
 
-  <!-- ====== BOOKING ====== -->
-  <div class="screen" id="booking">
+  <!-- ===================== MY PET ===================== -->
+  <div id="screen-mypet" class="screen">
     <div class="top-bar">
-      <button class="back-btn" onclick="goScreen('home')"><i class="fas fa-arrow-left"></i></button>
-      <h1>진료 예약</h1>
-      <div style="width:36px;"></div>
-    </div>
-    <div class="booking-steps" id="bookingSteps">
-      <div class="booking-step done"></div>
-      <div class="booking-step current"></div>
-      <div class="booking-step"></div>
-      <div class="booking-step"></div>
-    </div>
-    <div class="scroll-content">
-      <div class="section-title"><h2>날짜 선택</h2></div>
-      <div class="calendar-header">
-        <button onclick="changeMonth(-1)"><i class="fas fa-chevron-left"></i></button>
-        <h3 id="calendarTitle">2026년 6월</h3>
-        <button onclick="changeMonth(1)"><i class="fas fa-chevron-right"></i></button>
-      </div>
-      <div class="calendar-weekdays">
-        <span>일</span><span>월</span><span>화</span><span>수</span><span>목</span><span>금</span><span>토</span>
-      </div>
-      <div class="calendar-days" id="calendarDays"></div>
-
-      <div class="section-title" style="margin-top:16px;"><h2>시간 선택</h2></div>
-      <div class="time-slots">
-        <button class="time-slot" onclick="selectTime(this)">09:00</button>
-        <button class="time-slot" onclick="selectTime(this)">09:30</button>
-        <button class="time-slot" onclick="selectTime(this)">10:00</button>
-        <button class="time-slot selected" onclick="selectTime(this)">10:30</button>
-        <button class="time-slot" onclick="selectTime(this)">11:00</button>
-        <button class="time-slot disabled">11:30</button>
-        <button class="time-slot" onclick="selectTime(this)">14:00</button>
-        <button class="time-slot" onclick="selectTime(this)">14:30</button>
-        <button class="time-slot disabled">15:00</button>
-        <button class="time-slot" onclick="selectTime(this)">15:30</button>
-        <button class="time-slot" onclick="selectTime(this)">16:00</button>
-        <button class="time-slot" onclick="selectTime(this)">16:30</button>
-      </div>
-
-      <div style="padding:20px;">
-        <button class="btn-primary" onclick="showToast('예약이 완료되었습니다! 🎉')">예약 확정하기</button>
-      </div>
-    </div>
-  </div>
-
-  <!-- ====== MYPET ====== -->
-  <div class="screen" id="mypet">
-    <div class="top-bar">
-      <button class="back-btn" onclick="goScreen('home')"><i class="fas fa-arrow-left"></i></button>
-      <h1>내 반려동물</h1>
-      <button class="icon-btn"><i class="fas fa-plus"></i></button>
+      <div class="top-bar-title">내 반려동물</div>
+      <div class="top-bar-action"><i class="fas fa-plus"></i></div>
     </div>
     <div class="scroll-content">
       <div class="pet-tabs">
-        <button class="pet-tab active">
-          <div class="pet-avatar">🦎</div> 레오 (레오파드 게코)
-        </button>
-        <button class="pet-tab">
-          <div class="pet-avatar">🐹</div> 모찌
-        </button>
+        <div class="pet-tab active" onclick="switchPet(this, 0)"><span>🐶</span> 두부</div>
+        <div class="pet-tab" onclick="switchPet(this, 1)"><span>🐱</span> 나비</div>
+        <div class="pet-tab" onclick="switchPet(this, 2)"><span>🦜</span> 피카</div>
+        <div class="pet-tab" onclick="switchPet(this, 3)"><span>+</span> 추가</div>
       </div>
-
-      <div class="health-dashboard">
-        <div class="health-card">
-          <div class="label">체중</div>
-          <div class="value">68<span class="unit">g</span></div>
-        </div>
-        <div class="health-card">
-          <div class="label">나이</div>
-          <div class="value">2<span class="unit">살 3개월</span></div>
-        </div>
-        <div class="health-card">
-          <div class="label">다음 검진</div>
-          <div class="value" style="font-size:15px;color:var(--secondary);">6/15</div>
-        </div>
-        <div class="health-card">
-          <div class="label">건강 점수</div>
-          <div class="value" style="color:var(--accent-green);">92<span class="unit">점</span></div>
-        </div>
-      </div>
-
-      <div class="section-title"><h2>예방접종 타임라인 💉</h2></div>
-      <div class="timeline">
-        <div class="timeline-item">
-          <div class="timeline-dot" style="background:#E8F5E9;color:var(--accent-green);"><i class="fas fa-check"></i></div>
-          <div class="timeline-content">
-            <h4>기생충 검사</h4>
-            <p>2026.04.15 · 리틀펫 동물병원</p>
-          </div>
-        </div>
-        <div class="timeline-item">
-          <div class="timeline-dot" style="background:#E8F5E9;color:var(--accent-green);"><i class="fas fa-check"></i></div>
-          <div class="timeline-content">
-            <h4>피부 검사</h4>
-            <p>2026.03.01 · 리틀펫 동물병원</p>
-          </div>
-        </div>
-        <div class="timeline-item">
-          <div class="timeline-dot" style="background:var(--primary-light);color:var(--primary);"><i class="fas fa-clock"></i></div>
-          <div class="timeline-content">
-            <h4>정기 건강검진 (예정)</h4>
-            <p>2026.06.15 · 리틀펫 동물병원</p>
-          </div>
-        </div>
-      </div>
+      <div id="pet-content"></div>
     </div>
-    <div class="bottom-nav">
-      <button class="nav-item" onclick="goScreen('home')"><i class="fas fa-home"></i><span>홈</span></button>
-      <button class="nav-item" onclick="goScreen('find')"><i class="fas fa-search"></i><span>병원찾기</span></button>
-      <button class="nav-fab" onclick="goScreen('booking')"><i class="fas fa-calendar-plus"></i></button>
-      <button class="nav-item active" onclick="goScreen('mypet')"><i class="fas fa-paw"></i><span>내펫</span></button>
-      <button class="nav-item" onclick="goScreen('mypage')"><i class="fas fa-user"></i><span>마이</span></button>
-    </div>
+    <nav class="bottom-nav">
+      <div class="nav-item" onclick="setNav('home')"><i class="fas fa-home"></i><span>홈</span></div>
+      <div class="nav-item" onclick="setNav('find')"><i class="fas fa-map-marker-alt"></i><span>병원찾기</span></div>
+      <div class="nav-fab" onclick="goScreen('booking')"><i class="fas fa-calendar-plus"></i><span>예약</span></div>
+      <div class="nav-item active" onclick="setNav('mypet')"><i class="fas fa-paw"></i><span>내펫</span></div>
+      <div class="nav-item" onclick="setNav('mypage')"><i class="fas fa-user"></i><span>마이</span></div>
+    </nav>
   </div>
 
-  <!-- ====== RECORDS ====== -->
-  <div class="screen" id="records">
+  <!-- ===================== RECORDS ===================== -->
+  <div id="screen-records" class="screen">
     <div class="top-bar">
-      <button class="back-btn" onclick="goScreen('home')"><i class="fas fa-arrow-left"></i></button>
-      <h1>진료기록</h1>
-      <div style="width:36px;"></div>
+      <div class="top-bar-title">진료기록</div>
+      <div class="top-bar-action" style="position:relative">
+        <i class="fas fa-shopping-cart" onclick="openCart()" style="cursor:pointer"></i>
+      </div>
     </div>
     <div class="scroll-content">
-      <div class="chip-row" style="padding-top:12px;padding-bottom:12px;">
-        <button class="chip active">전체</button>
-        <button class="chip">레오 🦎</button>
-        <button class="chip">모찌 🐹</button>
+      <div style="padding:16px 20px 0">
+        <div style="display:flex;gap:8px">
+          <div class="chip active" style="flex:1;justify-content:center" onclick="filterRecord(this,'all')">전체</div>
+          <div class="chip" style="flex:1;justify-content:center" onclick="filterRecord(this,'dog')">🐶 두부</div>
+          <div class="chip" style="flex:1;justify-content:center" onclick="filterRecord(this,'cat')">🐱 나비</div>
+          <div class="chip" style="flex:1;justify-content:center" onclick="filterRecord(this,'bird')">🦜 피카</div>
+        </div>
       </div>
-      <div class="card">
+      <div style="padding:16px 20px 0">
         <div class="record-card">
-          <div class="record-header">
-            <h4>🦎 레오 · 정기검진</h4>
-            <span class="badge badge-green">완료</span>
+          <div class="record-top">
+            <div>
+              <div class="record-date">2025년 12월 15일 · 두부 🐶</div>
+              <div class="record-hospital">한강로 펫 동물병원</div>
+              <div class="record-diagnosis">피부염 치료 / 항생제 처방</div>
+            </div>
+            <div class="record-cost">₩42,000</div>
           </div>
-          <div class="record-detail">
-            리틀펫 동물병원 · 2026.05.20<br>
-            피부 상태 양호, 체중 약간 증가. 사료량 조절 권장.
-          </div>
-          <div class="record-cost">
-            <span>진료비</span>
-            <span class="amount">45,000원</span>
+          <div class="record-tags">
+            <span class="htag htag-blue">진료</span>
+            <span class="htag htag-orange">처방</span>
           </div>
         </div>
         <div class="record-card">
-          <div class="record-header">
-            <h4>🦎 레오 · 기생충 검사</h4>
-            <span class="badge badge-green">완료</span>
+          <div class="record-top">
+            <div>
+              <div class="record-date">2025년 11월 28일 · 나비 🐱</div>
+              <div class="record-hospital">이색동물 전문 케어센터</div>
+              <div class="record-diagnosis">정기 건강검진 / 구충제 투여</div>
+            </div>
+            <div class="record-cost">₩65,000</div>
           </div>
-          <div class="record-detail">
-            리틀펫 동물병원 · 2026.04.15<br>
-            기생충 음성. 다음 검사 6개월 후.
-          </div>
-          <div class="record-cost">
-            <span>진료비</span>
-            <span class="amount">35,000원</span>
+          <div class="record-tags">
+            <span class="htag htag-green">검진</span>
+            <span class="htag htag-blue">예방</span>
           </div>
         </div>
         <div class="record-card">
-          <div class="record-header">
-            <h4>🐹 모찌 · 치과 진료</h4>
-            <span class="badge badge-blue">처방전</span>
+          <div class="record-top">
+            <div>
+              <div class="record-date">2025년 11월 10일 · 피카 🦜</div>
+              <div class="record-hospital">이색동물 전문 케어센터</div>
+              <div class="record-diagnosis">깃털 이상 / 영양제 처방</div>
+            </div>
+            <div class="record-cost">₩38,000</div>
           </div>
-          <div class="record-detail">
-            해밀 소동물 클리닉 · 2026.04.02<br>
-            앞니 부정교합 확인. 사료 종류 변경 권장.
+          <div class="record-tags">
+            <span class="htag htag-purple">이색동물</span>
+            <span class="htag htag-orange">처방</span>
           </div>
-          <div class="record-cost">
-            <span>진료비</span>
-            <span class="amount">55,000원</span>
+        </div>
+        <div class="record-card">
+          <div class="record-top">
+            <div>
+              <div class="record-date">2025년 10월 5일 · 두부 🐶</div>
+              <div class="record-hospital">24시 프리미엄 동물의료원</div>
+              <div class="record-diagnosis">예방접종 · 종합백신</div>
+            </div>
+            <div class="record-cost">₩55,000</div>
+          </div>
+          <div class="record-tags">
+            <span class="htag htag-green">예방접종</span>
           </div>
         </div>
       </div>
     </div>
+    <nav class="bottom-nav">
+      <div class="nav-item" onclick="setNav('home')"><i class="fas fa-home"></i><span>홈</span></div>
+      <div class="nav-item" onclick="setNav('find')"><i class="fas fa-map-marker-alt"></i><span>병원찾기</span></div>
+      <div class="nav-fab" onclick="goScreen('booking')"><i class="fas fa-calendar-plus"></i><span>예약</span></div>
+      <div class="nav-item" onclick="setNav('mypet')"><i class="fas fa-paw"></i><span>내펫</span></div>
+      <div class="nav-item" onclick="setNav('mypage')"><i class="fas fa-user"></i><span>마이</span></div>
+    </nav>
   </div>
 
-  <!-- ====== MYPAGE ====== -->
-  <div class="screen" id="mypage">
-    <div class="top-bar">
-      <button class="back-btn" onclick="goScreen('home')"><i class="fas fa-arrow-left"></i></button>
-      <h1>마이페이지</h1>
-      <button class="icon-btn"><i class="fas fa-cog"></i></button>
-    </div>
-    <div class="scroll-content">
-      <div class="profile-section">
-        <div class="profile-avatar">👤</div>
-        <div class="profile-info">
-          <h3>펫호 회원</h3>
-          <p>petho@example.com</p>
+  <!-- ===================== MY PAGE ===================== -->
+  <div id="screen-mypage" class="screen">
+    <div class="scroll-content" style="padding-bottom:calc(var(--nav-height) + 8px)">
+      <div class="profile-header">
+        <div class="profile-row">
+          <div class="profile-avatar">👤</div>
+          <div>
+            <div class="profile-name">반려인 님</div>
+            <div class="profile-email">petho_user@email.com</div>
+          </div>
         </div>
-      </div>
-      <div class="profile-stats">
-        <div class="stat-item">
-          <div class="num">2</div>
-          <div class="label">반려동물</div>
-        </div>
-        <div class="stat-item">
-          <div class="num">7</div>
-          <div class="label">진료횟수</div>
-        </div>
-        <div class="stat-item">
-          <div class="num">3</div>
-          <div class="label">후기</div>
-        </div>
-        <div class="stat-item">
-          <div class="num">1</div>
-          <div class="label">보험</div>
+        <div class="profile-stats">
+          <div class="pstat"><div class="pstat-val">3</div><div class="pstat-key">반려동물</div></div>
+          <div class="pstat"><div class="pstat-val">12</div><div class="pstat-key">예약내역</div></div>
+          <div class="pstat"><div class="pstat-val">₩24만</div><div class="pstat-key">이용금액</div></div>
         </div>
       </div>
       <div class="menu-list">
+        <div class="menu-group"><div class="menu-group-title">반려동물 관리</div></div>
+        <div class="menu-item" onclick="goScreen('mypet')">
+          <div class="menu-item-icon" style="background:#E8F4FF;color:var(--primary)"><i class="fas fa-paw"></i></div>
+          <div class="menu-item-text"><div class="menu-item-label">내 반려동물</div><div class="menu-item-sub">3마리 등록됨</div></div>
+          <i class="fas fa-chevron-right menu-item-arrow"></i>
+        </div>
         <div class="menu-item" onclick="goScreen('records')">
-          <div class="menu-icon" style="background:#E8F4FF;color:var(--primary);"><i class="fas fa-file-medical"></i></div>
-          <span>진료기록</span>
-          <i class="fas fa-chevron-right arrow"></i>
+          <div class="menu-item-icon" style="background:#E8F5ED;color:var(--accent-green)"><i class="fas fa-file-medical"></i></div>
+          <div class="menu-item-text"><div class="menu-item-label">진료기록</div><div class="menu-item-sub">최근 진료: 2025.12.15</div></div>
+          <i class="fas fa-chevron-right menu-item-arrow"></i>
         </div>
-        <div class="menu-item" onclick="goScreen('insurance')">
-          <div class="menu-icon" style="background:#F3E8FF;color:var(--accent-purple);"><i class="fas fa-shield-alt"></i></div>
-          <span>펫보험 관리</span>
-          <i class="fas fa-chevron-right arrow"></i>
-        </div>
-        <div class="menu-item" onclick="goScreen('review')">
-          <div class="menu-icon" style="background:#FFF8E1;color:var(--accent-yellow);"><i class="fas fa-star"></i></div>
-          <span>내 후기 관리</span>
-          <i class="fas fa-chevron-right arrow"></i>
-        </div>
+        <div class="menu-divider"></div>
+        <div class="menu-group"><div class="menu-group-title">서비스</div></div>
         <div class="menu-item" onclick="goScreen('funeral')">
-          <div class="menu-icon" style="background:#F5F0EB;color:var(--funeral-warm);"><i class="fas fa-dove"></i></div>
-          <span>장례케어 서비스</span>
-          <i class="fas fa-chevron-right arrow"></i>
+          <div class="menu-item-icon" style="background:#F0EAFF;color:var(--accent-purple)"><i class="fas fa-dove"></i></div>
+          <div class="menu-item-text"><div class="menu-item-label">장례·추모 서비스</div><div class="menu-item-sub">화장, 납골, 수목장</div></div>
+          <i class="fas fa-chevron-right menu-item-arrow"></i>
+        </div>
+        <div class="menu-item" onclick="goScreen('shop')">
+          <div class="menu-item-icon" style="background:#E8F5ED;color:var(--accent-green)"><i class="fas fa-shopping-bag"></i></div>
+          <div class="menu-item-text"><div class="menu-item-label">용품 쇼핑몰</div><div class="menu-item-sub">사료, 장난감, 용품</div></div>
+          <i class="fas fa-chevron-right menu-item-arrow"></i>
+        </div>
+        <div class="menu-divider"></div>
+        <div class="menu-group"><div class="menu-group-title">계정</div></div>
+        <div class="menu-item">
+          <div class="menu-item-icon" style="background:#FFF0EB;color:var(--secondary)"><i class="fas fa-bell"></i></div>
+          <div class="menu-item-text"><div class="menu-item-label">알림 설정</div></div>
+          <i class="fas fa-chevron-right menu-item-arrow"></i>
         </div>
         <div class="menu-item">
-          <div class="menu-icon" style="background:#E8F5E9;color:var(--accent-green);"><i class="fas fa-bell"></i></div>
-          <span>알림 설정</span>
-          <i class="fas fa-chevron-right arrow"></i>
+          <div class="menu-item-icon" style="background:#F0F0F0;color:#888"><i class="fas fa-question-circle"></i></div>
+          <div class="menu-item-text"><div class="menu-item-label">고객센터</div></div>
+          <i class="fas fa-chevron-right menu-item-arrow"></i>
         </div>
         <div class="menu-item">
-          <div class="menu-icon" style="background:var(--secondary-light);color:var(--secondary);"><i class="fas fa-headset"></i></div>
-          <span>고객센터</span>
-          <i class="fas fa-chevron-right arrow"></i>
+          <div class="menu-item-icon" style="background:#FFE8E8;color:#E53935"><i class="fas fa-sign-out-alt"></i></div>
+          <div class="menu-item-text"><div class="menu-item-label">로그아웃</div></div>
+          <i class="fas fa-chevron-right menu-item-arrow"></i>
         </div>
       </div>
     </div>
-    <div class="bottom-nav">
-      <button class="nav-item" onclick="goScreen('home')"><i class="fas fa-home"></i><span>홈</span></button>
-      <button class="nav-item" onclick="goScreen('find')"><i class="fas fa-search"></i><span>병원찾기</span></button>
-      <button class="nav-fab" onclick="goScreen('booking')"><i class="fas fa-calendar-plus"></i></button>
-      <button class="nav-item" onclick="goScreen('mypet')"><i class="fas fa-paw"></i><span>내펫</span></button>
-      <button class="nav-item active" onclick="goScreen('mypage')"><i class="fas fa-user"></i><span>마이</span></button>
-    </div>
+    <nav class="bottom-nav">
+      <div class="nav-item" onclick="setNav('home')"><i class="fas fa-home"></i><span>홈</span></div>
+      <div class="nav-item" onclick="setNav('find')"><i class="fas fa-map-marker-alt"></i><span>병원찾기</span></div>
+      <div class="nav-fab" onclick="goScreen('booking')"><i class="fas fa-calendar-plus"></i><span>예약</span></div>
+      <div class="nav-item" onclick="setNav('mypet')"><i class="fas fa-paw"></i><span>내펫</span></div>
+      <div class="nav-item active" onclick="setNav('mypage')"><i class="fas fa-user"></i><span>마이</span></div>
+    </nav>
   </div>
 
-  <!-- ====== DETAIL ====== -->
-  <div class="screen" id="detail">
-    <div class="detail-hero">
-      🦎
-      <button class="back-float" onclick="goScreen('find')"><i class="fas fa-arrow-left"></i></button>
+  <!-- ===================== HOSPITAL DETAIL ===================== -->
+  <div id="screen-detail" class="screen">
+    <div class="top-bar" style="position:absolute;top:0;left:0;right:0;z-index:10;background:rgba(255,255,255,0.95);backdrop-filter:blur(8px)">
+      <div class="top-bar-back" onclick="goBack()"><i class="fas fa-arrow-left"></i></div>
+      <div class="top-bar-title" id="detail-title">병원 상세</div>
+      <div class="top-bar-action"><i class="fas fa-heart" id="detail-heart" style="cursor:pointer" onclick="toggleFav()"></i></div>
     </div>
-    <div class="scroll-content">
-      <div class="detail-body">
-        <h2>리틀펫 동물병원</h2>
-        <p class="detail-subtitle">파충류 · 양서류 · 소동물 전문</p>
-        <div class="detail-info-grid">
-          <div class="detail-info-item">
-            <div class="label">진료시간</div>
-            <div class="value">09:00 - 19:00</div>
-          </div>
-          <div class="detail-info-item">
-            <div class="label">휴진일</div>
-            <div class="value">일요일, 공휴일</div>
-          </div>
-          <div class="detail-info-item">
-            <div class="label">전화번호</div>
-            <div class="value">02-1234-5678</div>
-          </div>
-          <div class="detail-info-item">
-            <div class="label">평점</div>
-            <div class="value">★ 4.8 (128)</div>
-          </div>
+    <div class="scroll-content" style="padding-top:56px">
+      <div class="detail-hero" id="detail-hero">🏥</div>
+      <div class="detail-info">
+        <div class="detail-name" id="detail-name">병원명</div>
+        <div class="detail-tags" id="detail-tags"></div>
+        <div class="detail-meta">
+          <div class="detail-meta-item"><i class="fas fa-location-dot"></i><span id="detail-addr">주소</span></div>
+          <div class="detail-meta-item"><i class="fas fa-clock"></i><span id="detail-hours">운영시간</span></div>
         </div>
-
-        <div class="section-title" style="padding:0 0 12px;"><h2>최근 후기</h2><button class="more" onclick="goScreen('review')">전체보기</button></div>
-        <div style="background:var(--bg);border-radius:var(--radius-xs);padding:14px;margin-bottom:16px;">
-          <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px;">
-            <span style="font-size:13px;color:var(--accent-yellow);">★★★★★</span>
-            <span style="font-size:12px;color:var(--text-sub);">김OO · 2026.05.25</span>
-          </div>
-          <p style="font-size:13px;color:var(--text-sub);line-height:1.5;">레오파드 게코 진료 잘 봐주셨어요! 친절하고 꼼꼼합니다.</p>
+        <div class="detail-meta" style="margin-top:6px">
+          <div class="detail-meta-item"><i class="fas fa-star" style="color:var(--accent-yellow)"></i><span id="detail-rating">4.8 (234개 리뷰)</span></div>
+          <div class="detail-meta-item"><i class="fas fa-phone"></i><span>02-1234-5678</span></div>
         </div>
-
-        <div style="display:flex;gap:8px;">
-          <button class="btn-primary" style="flex:1;" onclick="goScreen('booking')">예약하기</button>
-          <button class="btn-outline" style="flex-shrink:0;" onclick="goScreen('review')">
-            <i class="fas fa-pen"></i> 후기
-          </button>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <!-- ====== INSURANCE (펫보험) ====== -->
-  <div class="screen" id="insurance">
-    <div class="top-bar">
-      <button class="back-btn" onclick="goScreen('home')"><i class="fas fa-arrow-left"></i></button>
-      <h1>펫보험</h1>
-      <div style="width:36px;"></div>
-    </div>
-    <div class="scroll-content">
-      <div class="insurance-hero">
-        <i class="fas fa-shield-alt"></i>
-        <h2>우리 아이 건강, 보험으로 지켜요</h2>
-        <p>이색반려동물 전용 보험 상품을 비교해 보세요</p>
-      </div>
-
-      <!-- Insurance Products -->
-      <div class="section-title"><h2>추천 보험 상품 🛡️</h2></div>
-
-      <div class="insurance-card">
-        <div class="insurance-card-header">
-          <div class="insurance-card-icon" style="background:#E8F4FF;color:var(--primary);">🐾</div>
-          <div style="flex:1;">
-            <h3>베이직 플랜</h3>
-            <span class="price">월 9,900원~</span>
-          </div>
-          <span class="badge badge-blue">인기</span>
-        </div>
-        <div class="insurance-card-body">
-          <div class="insurance-feature"><i class="fas fa-check-circle"></i> 입원비 보장 (1일 5만원, 연 30일)</div>
-          <div class="insurance-feature"><i class="fas fa-check-circle"></i> 수술비 보장 (1회 50만원, 연 2회)</div>
-          <div class="insurance-feature"><i class="fas fa-check-circle"></i> 통원 진료비 (1회 2만원, 연 20회)</div>
-          <div class="insurance-feature"><i class="fas fa-check-circle"></i> 배상책임 보장 500만원</div>
-        </div>
-        <div class="insurance-card-footer">
-          <button class="btn-secondary" onclick="showToast('상세 정보를 확인합니다')">상세보기</button>
-          <button class="btn-primary" onclick="showToast('가입 신청이 접수되었습니다! 📋')">가입신청</button>
+        <div class="detail-actions">
+          <button class="detail-action-btn action-outline" onclick="showToast('전화 연결 중...')"><i class="fas fa-phone"></i> 전화</button>
+          <button class="detail-action-btn action-outline" onclick="showToast('길 안내 시작!')"><i class="fas fa-directions"></i> 길찾기</button>
+          <button class="detail-action-btn action-primary" onclick="goScreen('booking')"><i class="fas fa-calendar-check"></i> 예약하기</button>
         </div>
       </div>
 
-      <div class="insurance-card">
-        <div class="insurance-card-header">
-          <div class="insurance-card-icon" style="background:#FFF0EB;color:var(--secondary);">💎</div>
-          <div style="flex:1;">
-            <h3>프리미엄 플랜</h3>
-            <span class="price">월 19,900원~</span>
-          </div>
-          <span class="badge badge-orange">추천</span>
-        </div>
-        <div class="insurance-card-body">
-          <div class="insurance-feature"><i class="fas fa-check-circle"></i> 입원비 보장 (1일 10만원, 연 60일)</div>
-          <div class="insurance-feature"><i class="fas fa-check-circle"></i> 수술비 보장 (1회 100만원, 연 3회)</div>
-          <div class="insurance-feature"><i class="fas fa-check-circle"></i> 통원 진료비 (1회 5만원, 연 30회)</div>
-          <div class="insurance-feature"><i class="fas fa-check-circle"></i> MRI/CT 검사비 보장</div>
-          <div class="insurance-feature"><i class="fas fa-check-circle"></i> 장례비 보장 30만원</div>
-          <div class="insurance-feature"><i class="fas fa-check-circle"></i> 배상책임 보장 1,000만원</div>
-        </div>
-        <div class="insurance-card-footer">
-          <button class="btn-secondary" onclick="showToast('상세 정보를 확인합니다')">상세보기</button>
-          <button class="btn-primary" onclick="showToast('가입 신청이 접수되었습니다! 📋')">가입신청</button>
-        </div>
+      <!-- 전문 동물 -->
+      <div class="section" style="padding-top:16px">
+        <div class="section-title">진료 가능 동물</div>
+        <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:10px" id="detail-animals"></div>
       </div>
 
-      <div class="insurance-card">
-        <div class="insurance-card-header">
-          <div class="insurance-card-icon" style="background:#F3E8FF;color:var(--accent-purple);">🌟</div>
-          <div style="flex:1;">
-            <h3>VIP 올케어 플랜</h3>
-            <span class="price">월 29,900원~</span>
-          </div>
-          <span class="badge badge-purple">최고</span>
+      <!-- 리뷰 -->
+      <div class="review-section">
+        <div class="section-header">
+          <div class="section-title">이용 후기</div>
+          <div class="hcard-rating"><i class="fas fa-star"></i><span id="detail-rev-avg">4.8</span></div>
         </div>
-        <div class="insurance-card-body">
-          <div class="insurance-feature"><i class="fas fa-check-circle"></i> 입원·수술·통원 종합 보장</div>
-          <div class="insurance-feature"><i class="fas fa-check-circle"></i> 선천성 질환 특약 포함</div>
-          <div class="insurance-feature"><i class="fas fa-check-circle"></i> 한방·물리치료 보장</div>
-          <div class="insurance-feature"><i class="fas fa-check-circle"></i> 장례비 보장 50만원</div>
-          <div class="insurance-feature"><i class="fas fa-check-circle"></i> 24시간 수의사 상담</div>
-          <div class="insurance-feature"><i class="fas fa-check-circle"></i> 배상책임 보장 3,000만원</div>
-        </div>
-        <div class="insurance-card-footer">
-          <button class="btn-secondary" onclick="showToast('상세 정보를 확인합니다')">상세보기</button>
-          <button class="btn-primary" onclick="showToast('가입 신청이 접수되었습니다! 📋')">가입신청</button>
-        </div>
-      </div>
-
-      <!-- Calculator -->
-      <div class="insurance-calc">
-        <h3><i class="fas fa-calculator"></i> 보험료 계산기</h3>
-        <div class="calc-field">
-          <label>반려동물 종류</label>
-          <select id="calcAnimal" onchange="calculateInsurance()">
-            <option value="reptile">파충류 (레오파드 게코, 이구아나 등)</option>
-            <option value="bird">조류 (앵무새, 카나리아 등)</option>
-            <option value="small">소동물 (햄스터, 기니피그 등)</option>
-            <option value="fish">어류 (아로와나, 구피 등)</option>
-            <option value="arthropod">절지류 (타란툴라 등)</option>
-          </select>
-        </div>
-        <div class="calc-field">
-          <label>나이</label>
-          <select id="calcAge" onchange="calculateInsurance()">
-            <option value="1">1살 이하</option>
-            <option value="2">1~3살</option>
-            <option value="3">3~5살</option>
-            <option value="4">5살 이상</option>
-          </select>
-        </div>
-        <div class="calc-field">
-          <label>보장 플랜</label>
-          <select id="calcPlan" onchange="calculateInsurance()">
-            <option value="basic">베이직</option>
-            <option value="premium">프리미엄</option>
-            <option value="vip">VIP 올케어</option>
-          </select>
-        </div>
-        <div class="calc-result">
-          <div class="desc">예상 월 보험료</div>
-          <div class="monthly" id="calcResult">9,900원</div>
-          <div class="desc">연간 약 <span id="calcYearly">118,800</span>원</div>
-        </div>
-        <button class="btn-primary" style="margin-top:16px;" onclick="showToast('맞춤 견적서를 발송합니다! 📧')">맞춤 견적 받기</button>
-      </div>
-    </div>
-  </div>
-
-  <!-- ====== REVIEW (병원 후기) ====== -->
-  <div class="screen" id="review">
-    <div class="top-bar">
-      <button class="back-btn" onclick="goScreen('home')"><i class="fas fa-arrow-left"></i></button>
-      <h1>병원 후기</h1>
-      <button class="icon-btn" onclick="openReviewModal()"><i class="fas fa-pen"></i></button>
-    </div>
-    <div class="scroll-content">
-      <!-- Summary -->
-      <div class="review-summary">
-        <div class="review-avg">4.7</div>
-        <div class="review-stars">★★★★★</div>
-        <div class="review-count">총 256개의 후기</div>
-        <div class="review-bars">
-          <div class="review-bar-row">
-            <span>5점</span>
-            <div class="review-bar"><div class="review-bar-fill" style="width:68%;"></div></div>
-            <span>174</span>
-          </div>
-          <div class="review-bar-row">
-            <span>4점</span>
-            <div class="review-bar"><div class="review-bar-fill" style="width:20%;"></div></div>
-            <span>51</span>
-          </div>
-          <div class="review-bar-row">
-            <span>3점</span>
-            <div class="review-bar"><div class="review-bar-fill" style="width:8%;"></div></div>
-            <span>20</span>
-          </div>
-          <div class="review-bar-row">
-            <span>2점</span>
-            <div class="review-bar"><div class="review-bar-fill" style="width:3%;"></div></div>
-            <span>8</span>
-          </div>
-          <div class="review-bar-row">
-            <span>1점</span>
-            <div class="review-bar"><div class="review-bar-fill" style="width:1%;"></div></div>
-            <span>3</span>
-          </div>
-        </div>
-      </div>
-
-      <!-- Filter chips -->
-      <div class="chip-row" style="padding:12px 20px;">
-        <button class="chip active">전체</button>
-        <button class="chip">🦎 파충류</button>
-        <button class="chip">🐦 조류</button>
-        <button class="chip">🐹 소동물</button>
-        <button class="chip">📸 사진후기</button>
-      </div>
-
-      <!-- Review List -->
-      <div class="card" style="margin-top:4px;">
-        <div class="review-item">
-          <div class="review-item-header">
-            <div class="reviewer-avatar">🦎</div>
-            <div class="reviewer-info">
-              <div class="name">김도연</div>
-              <div class="date">2026.05.28 · 리틀펫 동물병원</div>
-            </div>
-          </div>
-          <div class="review-item-stars">★★★★★</div>
-          <div class="review-item-text">
-            레오파드 게코 키우면서 제일 걱정이었던 탈피 문제를 정말 꼼꼼하게 봐주셨어요. 
-            원인도 자세히 설명해주시고, 습도 관리 팁도 알려주셨습니다. 파충류 전문 병원이라 확실히 다르네요!
-          </div>
-          <div class="review-item-tags">
-            <span class="review-tag">🦎 레오파드게코</span>
-            <span class="review-tag">👍 친절해요</span>
-            <span class="review-tag">📝 설명이 자세해요</span>
-          </div>
-          <div class="review-helpful">
-            <button onclick="showToast('도움이 됐어요! 👍')"><i class="fas fa-thumbs-up"></i> 도움이 됐어요 (23)</button>
-          </div>
-        </div>
-
-        <div class="review-item">
-          <div class="review-item-header">
-            <div class="reviewer-avatar">🐦</div>
-            <div class="reviewer-info">
-              <div class="name">박서연</div>
-              <div class="date">2026.05.25 · 에비앤 조류병원</div>
-            </div>
-          </div>
-          <div class="review-item-stars">★★★★☆</div>
-          <div class="review-item-text">
-            코카틸 진료 받았는데 깃털 상태를 잘 봐주셨어요. 대기시간이 좀 길었지만 진료는 만족스럽습니다. 
-            조류 전문이라 신뢰가 갑니다.
-          </div>
-          <div class="review-item-tags">
-            <span class="review-tag">🐦 코카틸</span>
-            <span class="review-tag">⏰ 대기시간 있음</span>
-            <span class="review-tag">💊 진료 만족</span>
-          </div>
-          <div class="review-helpful">
-            <button onclick="showToast('도움이 됐어요! 👍')"><i class="fas fa-thumbs-up"></i> 도움이 됐어요 (15)</button>
-          </div>
-        </div>
-
-        <div class="review-item">
-          <div class="review-item-header">
-            <div class="reviewer-avatar">🐹</div>
-            <div class="reviewer-info">
-              <div class="name">이준혁</div>
-              <div class="date">2026.05.22 · 해밀 소동물 클리닉</div>
-            </div>
-          </div>
-          <div class="review-item-stars">★★★★★</div>
-          <div class="review-item-text">
-            기니피그 치아 문제로 갔는데, 부정교합을 정확히 진단해주셨어요. 사료 추천까지 해주시고 
-            정기 검진 일정도 잡아주셔서 너무 좋았습니다. 강추합니다!
-          </div>
-          <div class="review-item-tags">
-            <span class="review-tag">🐹 기니피그</span>
-            <span class="review-tag">👍 친절해요</span>
-            <span class="review-tag">🏥 시설이 깔끔해요</span>
-          </div>
-          <div class="review-helpful">
-            <button onclick="showToast('도움이 됐어요! 👍')"><i class="fas fa-thumbs-up"></i> 도움이 됐어요 (31)</button>
-          </div>
-        </div>
-
-        <div class="review-item">
-          <div class="review-item-header">
-            <div class="reviewer-avatar">🐍</div>
-            <div class="reviewer-info">
-              <div class="name">최민서</div>
-              <div class="date">2026.05.18 · 리틀펫 동물병원</div>
-            </div>
-          </div>
-          <div class="review-item-stars">★★★★★</div>
-          <div class="review-item-text">
-            볼파이톤 호흡기 문제로 급하게 방문했는데 응급 진료 가능해서 다행이었어요. 
-            수의사분이 뱀에 대한 전문지식이 풍부해서 안심하고 맡길 수 있었습니다.
-          </div>
-          <div class="review-item-tags">
-            <span class="review-tag">🐍 볼파이톤</span>
-            <span class="review-tag">🚨 응급 가능</span>
-            <span class="review-tag">👨‍⚕️ 전문성 좋아요</span>
-          </div>
-          <div class="review-helpful">
-            <button onclick="showToast('도움이 됐어요! 👍')"><i class="fas fa-thumbs-up"></i> 도움이 됐어요 (42)</button>
-          </div>
-        </div>
-      </div>
-
-      <div style="padding:20px;">
-        <button class="btn-primary" onclick="openReviewModal()">
+        <button class="review-write-btn" onclick="openReviewModal()">
           <i class="fas fa-pen"></i> 후기 작성하기
         </button>
+        <div id="review-list"></div>
       </div>
     </div>
-
-    <!-- Review Write Modal -->
-    <div class="modal-overlay" id="reviewModal">
-      <div class="modal-sheet">
-        <div class="modal-handle"></div>
-        <h3>후기 작성</h3>
-
-        <div class="calc-field">
-          <label>병원 선택</label>
-          <select>
-            <option>리틀펫 동물병원</option>
-            <option>에비앤 조류병원</option>
-            <option>해밀 소동물 클리닉</option>
-          </select>
-        </div>
-
-        <label style="font-size:13px;font-weight:600;color:var(--text-sub);display:block;margin-bottom:8px;">별점</label>
-        <div class="star-rating" id="starRating">
-          <i class="fas fa-star" data-star="1" onclick="setRating(1)"></i>
-          <i class="fas fa-star" data-star="2" onclick="setRating(2)"></i>
-          <i class="fas fa-star" data-star="3" onclick="setRating(3)"></i>
-          <i class="fas fa-star" data-star="4" onclick="setRating(4)"></i>
-          <i class="fas fa-star" data-star="5" onclick="setRating(5)"></i>
-        </div>
-
-        <label style="font-size:13px;font-weight:600;color:var(--text-sub);display:block;margin-bottom:8px;">태그 선택</label>
-        <div class="review-tag-select">
-          <button class="review-tag-option" onclick="toggleTag(this)">👍 친절해요</button>
-          <button class="review-tag-option" onclick="toggleTag(this)">📝 설명이 자세해요</button>
-          <button class="review-tag-option" onclick="toggleTag(this)">🏥 시설이 깔끔해요</button>
-          <button class="review-tag-option" onclick="toggleTag(this)">💰 가격이 합리적</button>
-          <button class="review-tag-option" onclick="toggleTag(this)">⏰ 대기 없어요</button>
-          <button class="review-tag-option" onclick="toggleTag(this)">👨‍⚕️ 전문성 좋아요</button>
-          <button class="review-tag-option" onclick="toggleTag(this)">🚨 응급 가능</button>
-        </div>
-
-        <label style="font-size:13px;font-weight:600;color:var(--text-sub);display:block;margin:12px 0 8px;">후기 내용</label>
-        <textarea class="review-textarea" placeholder="병원 방문 경험을 자세히 공유해주세요. 다른 보호자분들에게 큰 도움이 됩니다!"></textarea>
-
-        <div style="display:flex;gap:8px;margin-top:16px;">
-          <button class="btn-secondary" style="flex:1;" onclick="closeReviewModal()">취소</button>
-          <button class="btn-primary" style="flex:2;" onclick="submitReview()">후기 등록</button>
-        </div>
-      </div>
-    </div>
+    <nav class="bottom-nav">
+      <div class="nav-item" onclick="setNav('home')"><i class="fas fa-home"></i><span>홈</span></div>
+      <div class="nav-item" onclick="setNav('find')"><i class="fas fa-map-marker-alt"></i><span>병원찾기</span></div>
+      <div class="nav-fab" onclick="goScreen('booking')"><i class="fas fa-calendar-plus"></i><span>예약</span></div>
+      <div class="nav-item" onclick="setNav('mypet')"><i class="fas fa-paw"></i><span>내펫</span></div>
+      <div class="nav-item" onclick="setNav('mypage')"><i class="fas fa-user"></i><span>마이</span></div>
+    </nav>
   </div>
 
-  <!-- ====== FUNERAL CARE (장례케어) ====== -->
-  <div class="screen" id="funeral">
+  <!-- ===================== FUNERAL ===================== -->
+  <div id="screen-funeral" class="screen">
     <div class="top-bar">
-      <button class="back-btn" onclick="goScreen('home')"><i class="fas fa-arrow-left"></i></button>
-      <h1>장례케어</h1>
-      <div style="width:36px;"></div>
+      <div class="top-bar-back" onclick="goBack()"><i class="fas fa-arrow-left"></i></div>
+      <div class="top-bar-title">장례·추모 서비스</div>
+      <div style="width:36px"></div>
     </div>
     <div class="scroll-content">
-      <div class="funeral-hero">
-        <i class="fas fa-dove"></i>
-        <h2>소중한 이별, 따뜻하게 함께합니다</h2>
-        <p>반려동물과의 마지막 시간을<br>정성껏 준비해 드립니다</p>
-      </div>
-
-      <!-- Funeral Steps -->
-      <div class="section-title"><h2>장례 절차 안내 🕊️</h2></div>
-      <div class="funeral-steps">
-        <div class="funeral-step">
-          <div class="funeral-step-num">1</div>
-          <div class="funeral-step-content">
-            <h4>임종 준비 및 안치</h4>
-            <p>반려동물이 편안히 쉴 수 있도록 깨끗한 수건이나 담요에 눕혀 안치합니다. 
-            가능하면 서늘한 곳에 보관하며, 아이스팩을 활용합니다.</p>
-          </div>
-        </div>
-        <div class="funeral-step">
-          <div class="funeral-step-num">2</div>
-          <div class="funeral-step-content">
-            <h4>장례식장 예약</h4>
-            <p>가까운 반려동물 장례식장에 연락하여 예약합니다. 
-            펫호 앱에서 주변 장례식장을 검색하고 비교할 수 있습니다.</p>
-          </div>
-        </div>
-        <div class="funeral-step">
-          <div class="funeral-step-num">3</div>
-          <div class="funeral-step-content">
-            <h4>입관 및 추모식</h4>
-            <p>장례식장에서 입관 절차를 진행하며, 가족들이 마지막 인사를 나눕니다. 
-            꽃, 편지, 좋아하던 간식 등을 함께 넣을 수 있습니다.</p>
-          </div>
-        </div>
-        <div class="funeral-step">
-          <div class="funeral-step-num">4</div>
-          <div class="funeral-step-content">
-            <h4>화장 (다비식)</h4>
-            <p>개별 화장 또는 합동 화장을 선택합니다. 
-            개별 화장 시 유골을 직접 수습할 수 있습니다.</p>
-          </div>
-        </div>
-        <div class="funeral-step">
-          <div class="funeral-step-num">5</div>
-          <div class="funeral-step-content">
-            <h4>유골 보관 / 수목장</h4>
-            <p>유골함 보관, 수목장, 산골 등 원하는 방식을 선택합니다. 
-            온라인 추모관을 통해 언제든 추모할 수 있습니다.</p>
-          </div>
+      <div style="background:linear-gradient(135deg,#2C3E50,#4A5568);padding:20px 20px 28px;flex-shrink:0">
+        <div style="font-size:13px;color:rgba(255,255,255,0.6);margin-bottom:6px">소중한 반려동물을 위한</div>
+        <div style="font-size:20px;font-weight:800;color:#fff;">마지막 사랑을 담은<br>펫 장례 서비스</div>
+        <div style="display:flex;gap:8px;margin-top:14px;flex-wrap:wrap">
+          <span style="background:rgba(255,255,255,0.15);border-radius:20px;padding:5px 12px;font-size:12px;color:#fff">🕊️ 개인 화장</span>
+          <span style="background:rgba(255,255,255,0.15);border-radius:20px;padding:5px 12px;font-size:12px;color:#fff">🏺 납골함</span>
+          <span style="background:rgba(255,255,255,0.15);border-radius:20px;padding:5px 12px;font-size:12px;color:#fff">🌳 수목장</span>
+          <span style="background:rgba(255,255,255,0.15);border-radius:20px;padding:5px 12px;font-size:12px;color:#fff">💜 추모관</span>
         </div>
       </div>
 
-      <!-- Memorial Services -->
-      <div class="memorial-section">
-        <h3>🌸 추모 서비스</h3>
-        <div class="memorial-card">
-          <h4>온라인 추모관</h4>
-          <p>사진과 추억을 담은 온라인 추모 공간을 만들어 드립니다. 가족·친구와 함께 추모할 수 있습니다.</p>
-          <div class="price-range">무료</div>
+      <div style="padding:20px">
+        <!-- 화장 서비스 -->
+        <div class="service-card" id="funeral-card-0" onclick="selectFuneral(0)">
+          <div class="service-icon-row">
+            <div class="service-icon" style="background:#FFF0EB;font-size:32px">🕊️</div>
+            <div>
+              <div class="service-name">개인 화장 서비스</div>
+              <div class="service-desc">반려동물만을 위한 1:1 개별 화장</div>
+            </div>
+          </div>
+          <div class="price-table">
+            <div class="price-row"><span class="price-label">소형 (5kg 미만)</span><span class="price-value highlight">₩120,000~</span></div>
+            <div class="price-row"><span class="price-label">중형 (5~15kg)</span><span class="price-value highlight">₩180,000~</span></div>
+            <div class="price-row"><span class="price-label">대형 (15kg 이상)</span><span class="price-value highlight">₩250,000~</span></div>
+            <div class="price-row"><span class="price-label">이색동물 (소형)</span><span class="price-value highlight">₩80,000~</span></div>
+          </div>
         </div>
-        <div class="memorial-card">
-          <h4>유골 보석 제작</h4>
-          <p>소중한 아이의 유골 일부로 세상에 하나뿐인 추모 보석을 제작합니다.</p>
-          <div class="price-range">150,000원 ~</div>
-        </div>
-        <div class="memorial-card">
-          <h4>포토 앨범 제작</h4>
-          <p>함께한 추억 사진으로 고급 포토 앨범을 제작합니다. 영원히 간직할 수 있는 소중한 선물입니다.</p>
-          <div class="price-range">35,000원 ~</div>
-        </div>
-        <div class="memorial-card">
-          <h4>초상화 그림 의뢰</h4>
-          <p>전문 작가가 반려동물의 초상화를 수작업으로 그려드립니다.</p>
-          <div class="price-range">80,000원 ~</div>
-        </div>
-      </div>
 
-      <!-- Grief Support -->
-      <div class="grief-support">
-        <h3>💛 펫로스 상담</h3>
-        <p>반려동물을 떠나보낸 후 느끼는 슬픔은 자연스러운 감정입니다. 
-        전문 상담사가 함께 마음을 돌봐 드립니다.</p>
-        <div class="grief-contact">
-          <button style="background:var(--primary);color:#fff;" onclick="showToast('상담 예약이 접수되었습니다 💛')">
-            <i class="fas fa-phone"></i> 전화 상담
-          </button>
-          <button style="background:var(--card);color:var(--text);border:1px solid var(--border);" onclick="showToast('채팅 상담을 시작합니다')">
-            <i class="fas fa-comment"></i> 채팅 상담
-          </button>
+        <!-- 납골 서비스 -->
+        <div class="service-card" id="funeral-card-1" onclick="selectFuneral(1)">
+          <div class="service-icon-row">
+            <div class="service-icon" style="background:#F0EAFF;font-size:32px">🏺</div>
+            <div>
+              <div class="service-name">납골함 / 추모 서비스</div>
+              <div class="service-desc">화장 후 유골을 납골함에 안치</div>
+            </div>
+          </div>
+          <div class="price-table">
+            <div class="price-row"><span class="price-label">일반 납골함 (1년)</span><span class="price-value highlight">₩150,000</span></div>
+            <div class="price-row"><span class="price-label">프리미엄 납골함 (3년)</span><span class="price-value highlight">₩380,000</span></div>
+            <div class="price-row"><span class="price-label">반영구 납골당</span><span class="price-value highlight">₩800,000~</span></div>
+            <div class="price-row"><span class="price-label">유골함 (인계)</span><span class="price-value highlight">₩30,000~</span></div>
+          </div>
         </div>
-      </div>
 
-      <div style="padding:0 20px 20px;">
-        <button class="btn-primary" onclick="goScreen('funeralHall')" style="background:linear-gradient(135deg, var(--funeral-warm), #8B6340);">
-          <i class="fas fa-map-marked-alt"></i> 주변 장례식장 찾기
-        </button>
+        <!-- 수목장 -->
+        <div class="service-card" id="funeral-card-2" onclick="selectFuneral(2)">
+          <div class="service-icon-row">
+            <div class="service-icon" style="background:#E8F5ED;font-size:32px">🌳</div>
+            <div>
+              <div class="service-name">수목장 / 자연장</div>
+              <div class="service-desc">자연으로 돌아가는 친환경 장례</div>
+            </div>
+          </div>
+          <div class="price-table">
+            <div class="price-row"><span class="price-label">단독 수목장 (10년)</span><span class="price-value highlight">₩450,000</span></div>
+            <div class="price-row"><span class="price-label">합장 수목장 (10년)</span><span class="price-value highlight">₩250,000</span></div>
+            <div class="price-row"><span class="price-label">잔디장 (자연장)</span><span class="price-value highlight">₩180,000</span></div>
+            <div class="price-row"><span class="price-label">해양 산골</span><span class="price-value highlight">₩350,000</span></div>
+          </div>
+        </div>
+
+        <!-- 추모관 -->
+        <div class="service-card" id="funeral-card-3" onclick="selectFuneral(3)">
+          <div class="service-icon-row">
+            <div class="service-icon" style="background:#E8F4FF;font-size:32px">💜</div>
+            <div>
+              <div class="service-name">추모·장례식 서비스</div>
+              <div class="service-desc">소중한 마지막 작별 인사</div>
+            </div>
+          </div>
+          <div class="price-table">
+            <div class="price-row"><span class="price-label">가족 추모식 (1시간)</span><span class="price-value highlight">₩80,000</span></div>
+            <div class="price-row"><span class="price-label">프리미엄 추모식 (2시간)</span><span class="price-value highlight">₩160,000</span></div>
+            <div class="price-row"><span class="price-label">추모 액자 / 기념품 제작</span><span class="price-value highlight">₩50,000~</span></div>
+            <div class="price-row"><span class="price-label">방문 수거 서비스</span><span class="price-value highlight">₩30,000</span></div>
+          </div>
+        </div>
+
+        <!-- 예약 -->
+        <div style="background:var(--card);border-radius:18px;padding:20px;box-shadow:0 2px 12px rgba(0,0,0,0.07)">
+          <div class="booking-title" style="font-size:16px;margin-bottom:14px">장례 서비스 예약</div>
+          <div class="form-group">
+            <label class="form-label">서비스 선택</label>
+            <select class="form-select" id="funeral-service-select">
+              <option>개인 화장 서비스</option>
+              <option>납골함 / 추모 서비스</option>
+              <option>수목장 / 자연장</option>
+              <option>추모·장례식 서비스</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label class="form-label">반려동물 종류</label>
+            <select class="form-select">
+              <option>강아지</option>
+              <option>고양이</option>
+              <option>이색동물 (조류)</option>
+              <option>이색동물 (파충류)</option>
+              <option>이색동물 (소동물)</option>
+              <option>기타</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label class="form-label">희망 날짜</label>
+            <input class="form-input" type="date" />
+          </div>
+          <div class="form-group">
+            <label class="form-label">연락처</label>
+            <input class="form-input" type="tel" placeholder="010-0000-0000" />
+          </div>
+          <button class="btn-full" onclick="showToast('장례 서비스 예약이 완료되었습니다 🕊️')">예약 신청하기</button>
+        </div>
+
+        <div class="funeral-notice" style="margin:16px 0 0">
+          <p>📌 <strong>안내사항</strong><br>
+          • 방문 수거 서비스는 24시간 운영됩니다<br>
+          • 이색동물(파충류, 조류 등)도 전문 처리 가능합니다<br>
+          • 예약 후 담당자가 1시간 내 연락드립니다<br>
+          • 모든 서비스는 관련 법령에 따라 처리됩니다</p>
+        </div>
       </div>
     </div>
+    <nav class="bottom-nav">
+      <div class="nav-item" onclick="setNav('home')"><i class="fas fa-home"></i><span>홈</span></div>
+      <div class="nav-item" onclick="setNav('find')"><i class="fas fa-map-marker-alt"></i><span>병원찾기</span></div>
+      <div class="nav-fab" onclick="goScreen('booking')"><i class="fas fa-calendar-plus"></i><span>예약</span></div>
+      <div class="nav-item" onclick="setNav('mypet')"><i class="fas fa-paw"></i><span>내펫</span></div>
+      <div class="nav-item" onclick="setNav('mypage')"><i class="fas fa-user"></i><span>마이</span></div>
+    </nav>
   </div>
 
-  <!-- ====== FUNERAL HALL (장례식장 찾기) ====== -->
-  <div class="screen" id="funeralHall">
+  <!-- ===================== SHOP ===================== -->
+  <div id="screen-shop" class="screen">
     <div class="top-bar">
-      <button class="back-btn" onclick="goScreen('funeral')"><i class="fas fa-arrow-left"></i></button>
-      <h1>주변 장례식장</h1>
-      <button class="icon-btn"><i class="fas fa-sliders-h"></i></button>
+      <div class="top-bar-back" onclick="goBack()"><i class="fas fa-arrow-left"></i></div>
+      <div class="top-bar-title">펫호 용품 쇼핑몰</div>
+      <div class="top-bar-action" style="position:relative" onclick="openCart()">
+        <i class="fas fa-shopping-cart" style="cursor:pointer"></i>
+        <span class="cart-badge" id="cart-count">0</span>
+      </div>
     </div>
     <div class="scroll-content">
-      <!-- Map -->
-      <div class="funeral-hall-map">
-        <div class="map-markers">
-          <div class="map-marker" style="top:30%;left:40%;background:var(--funeral-warm);"><i class="fas fa-cross"></i></div>
-          <div class="map-marker" style="top:50%;left:65%;background:var(--funeral-warm);"><i class="fas fa-cross"></i></div>
-          <div class="map-marker" style="top:65%;left:30%;background:var(--funeral-warm);"><i class="fas fa-cross"></i></div>
-        </div>
-        <div class="map-overlay">
-          <i class="fas fa-map-marked-alt"></i>
-          <span>장례식장 위치</span>
+      <div style="padding:12px 20px 8px">
+        <div class="shop-search" style="margin:0 0 12px">
+          <i class="fas fa-search"></i>
+          <input type="text" placeholder="사료, 장난감, 용품 검색..." id="shop-search-input" oninput="filterShop()" />
         </div>
       </div>
-
-      <!-- Filter -->
-      <div class="chip-row" style="padding:12px 20px;">
-        <button class="chip active">전체</button>
-        <button class="chip">🔥 개별화장</button>
-        <button class="chip">🌳 수목장</button>
-        <button class="chip">🕊️ 추모실</button>
-        <button class="chip">🚗 픽업서비스</button>
+      <div class="shop-cats">
+        <div class="chip active" onclick="shopCat(this,'all')">전체</div>
+        <div class="chip" onclick="shopCat(this,'dog')">🐶 강아지</div>
+        <div class="chip" onclick="shopCat(this,'cat')">🐱 고양이</div>
+        <div class="chip" onclick="shopCat(this,'exotic')">🦜 이색동물</div>
+        <div class="chip" onclick="shopCat(this,'food')">🥩 사료/간식</div>
+        <div class="chip" onclick="shopCat(this,'toy')">🎾 장난감</div>
+        <div class="chip" onclick="shopCat(this,'health')">💊 건강/의약</div>
       </div>
 
-      <!-- Hall List -->
-      <div class="funeral-hall-card">
-        <div class="funeral-hall-info">
-          <div class="funeral-hall-thumb">🏛️</div>
-          <div class="funeral-hall-detail">
-            <h3>하늘나라 펫메모리얼</h3>
-            <div class="funeral-hall-meta">
-              <span><i class="fas fa-map-marker-alt"></i> 서울 강남구 · 2.3km</span>
-              <span><i class="fas fa-clock"></i> 24시간 운영</span>
-              <span><i class="fas fa-star" style="color:var(--accent-yellow);"></i> 4.9 (89)</span>
-            </div>
-          </div>
+      <!-- 특가 배너 -->
+      <div style="margin:4px 20px 16px;background:linear-gradient(135deg,#FF7043,#FF9800);border-radius:16px;padding:14px 16px;display:flex;align-items:center;justify-content:space-between;cursor:pointer">
+        <div>
+          <div style="font-size:11px;font-weight:700;color:rgba(255,255,255,0.8);margin-bottom:4px">🔥 오늘의 특가</div>
+          <div style="font-size:16px;font-weight:800;color:#fff">최대 40% 할인!</div>
         </div>
-        <div class="funeral-hall-services">
-          <span class="tag" style="background:#FFF0EB;color:var(--secondary);">개별화장</span>
-          <span class="tag" style="background:#E8F5E9;color:var(--accent-green);">수목장</span>
-          <span class="tag" style="background:#F3E8FF;color:var(--accent-purple);">추모실</span>
-          <span class="tag" style="background:#E8F4FF;color:var(--primary);">픽업서비스</span>
-        </div>
-        <div class="funeral-hall-actions">
-          <button onclick="showToast('전화 연결 중...')"><i class="fas fa-phone"></i> 전화</button>
-          <button onclick="showToast('예약 페이지로 이동합니다')"><i class="fas fa-calendar-check"></i> 예약</button>
-        </div>
+        <div style="font-size:36px">🛒</div>
       </div>
 
-      <div class="funeral-hall-card">
-        <div class="funeral-hall-info">
-          <div class="funeral-hall-thumb">🌿</div>
-          <div class="funeral-hall-detail">
-            <h3>그린펫 장례식장</h3>
-            <div class="funeral-hall-meta">
-              <span><i class="fas fa-map-marker-alt"></i> 서울 송파구 · 4.1km</span>
-              <span><i class="fas fa-clock"></i> 08:00 - 22:00</span>
-              <span><i class="fas fa-star" style="color:var(--accent-yellow);"></i> 4.7 (62)</span>
-            </div>
-          </div>
-        </div>
-        <div class="funeral-hall-services">
-          <span class="tag" style="background:#FFF0EB;color:var(--secondary);">개별화장</span>
-          <span class="tag" style="background:#E8F5E9;color:var(--accent-green);">합동화장</span>
-          <span class="tag" style="background:#F3E8FF;color:var(--accent-purple);">유골함 제작</span>
-        </div>
-        <div class="funeral-hall-actions">
-          <button onclick="showToast('전화 연결 중...')"><i class="fas fa-phone"></i> 전화</button>
-          <button onclick="showToast('예약 페이지로 이동합니다')"><i class="fas fa-calendar-check"></i> 예약</button>
-        </div>
-      </div>
+      <div class="product-grid" id="product-grid"></div>
+    </div>
+    <nav class="bottom-nav">
+      <div class="nav-item" onclick="setNav('home')"><i class="fas fa-home"></i><span>홈</span></div>
+      <div class="nav-item" onclick="setNav('find')"><i class="fas fa-map-marker-alt"></i><span>병원찾기</span></div>
+      <div class="nav-fab" onclick="goScreen('booking')"><i class="fas fa-calendar-plus"></i><span>예약</span></div>
+      <div class="nav-item" onclick="setNav('mypet')"><i class="fas fa-paw"></i><span>내펫</span></div>
+      <div class="nav-item" onclick="setNav('mypage')"><i class="fas fa-user"></i><span>마이</span></div>
+    </nav>
+  </div>
 
-      <div class="funeral-hall-card">
-        <div class="funeral-hall-info">
-          <div class="funeral-hall-thumb">🌸</div>
-          <div class="funeral-hall-detail">
-            <h3>무지개다리 메모리얼파크</h3>
-            <div class="funeral-hall-meta">
-              <span><i class="fas fa-map-marker-alt"></i> 경기 성남시 · 8.5km</span>
-              <span><i class="fas fa-clock"></i> 09:00 - 21:00</span>
-              <span><i class="fas fa-star" style="color:var(--accent-yellow);"></i> 4.8 (124)</span>
-            </div>
-          </div>
-        </div>
-        <div class="funeral-hall-services">
-          <span class="tag" style="background:#FFF0EB;color:var(--secondary);">개별화장</span>
-          <span class="tag" style="background:#E8F5E9;color:var(--accent-green);">수목장</span>
-          <span class="tag" style="background:#FFF8E1;color:var(--accent-yellow);">산골</span>
-          <span class="tag" style="background:#E8F4FF;color:var(--primary);">픽업서비스</span>
-          <span class="tag" style="background:#F3E8FF;color:var(--accent-purple);">추모실</span>
-        </div>
-        <div class="funeral-hall-actions">
-          <button onclick="showToast('전화 연결 중...')"><i class="fas fa-phone"></i> 전화</button>
-          <button onclick="showToast('예약 페이지로 이동합니다')"><i class="fas fa-calendar-check"></i> 예약</button>
-        </div>
+  <!-- ===================== REVIEW MODAL ===================== -->
+  <div class="modal-overlay" id="review-modal">
+    <div class="modal-sheet">
+      <div class="modal-handle"></div>
+      <div class="modal-title">후기 작성하기</div>
+      <div style="text-align:center;margin-bottom:8px;font-size:14px;color:var(--text-sub)">별점을 선택해 주세요</div>
+      <div class="star-selector" id="star-selector">
+        <span class="star-btn" onclick="setStar(1)">⭐</span>
+        <span class="star-btn" onclick="setStar(2)">⭐</span>
+        <span class="star-btn" onclick="setStar(3)">⭐</span>
+        <span class="star-btn" onclick="setStar(4)">⭐</span>
+        <span class="star-btn" onclick="setStar(5)">⭐</span>
       </div>
-
-      <div class="funeral-hall-card">
-        <div class="funeral-hall-info">
-          <div class="funeral-hall-thumb">🕊️</div>
-          <div class="funeral-hall-detail">
-            <h3>별이된 펫 장례식장</h3>
-            <div class="funeral-hall-meta">
-              <span><i class="fas fa-map-marker-alt"></i> 서울 마포구 · 5.7km</span>
-              <span><i class="fas fa-clock"></i> 24시간 운영</span>
-              <span><i class="fas fa-star" style="color:var(--accent-yellow);"></i> 4.6 (47)</span>
-            </div>
-          </div>
-        </div>
-        <div class="funeral-hall-services">
-          <span class="tag" style="background:#FFF0EB;color:var(--secondary);">개별화장</span>
-          <span class="tag" style="background:#F3E8FF;color:var(--accent-purple);">추모실</span>
-          <span class="tag" style="background:#E8F4FF;color:var(--primary);">긴급픽업</span>
-        </div>
-        <div class="funeral-hall-actions">
-          <button onclick="showToast('전화 연결 중...')"><i class="fas fa-phone"></i> 전화</button>
-          <button onclick="showToast('예약 페이지로 이동합니다')"><i class="fas fa-calendar-check"></i> 예약</button>
-        </div>
+      <div class="pet-select-label">반려동물 종류</div>
+      <div class="pet-radio-group" id="review-pet-group">
+        <div class="pet-radio selected" onclick="selectPetRadio(this)">🐶 강아지</div>
+        <div class="pet-radio" onclick="selectPetRadio(this)">🐱 고양이</div>
+        <div class="pet-radio" onclick="selectPetRadio(this)">🦜 조류</div>
+        <div class="pet-radio" onclick="selectPetRadio(this)">🦎 파충류</div>
+        <div class="pet-radio" onclick="selectPetRadio(this)">🐰 소동물</div>
+        <div class="pet-radio" onclick="selectPetRadio(this)">기타</div>
       </div>
-
-      <div class="funeral-hall-card">
-        <div class="funeral-hall-info">
-          <div class="funeral-hall-thumb">🌳</div>
-          <div class="funeral-hall-detail">
-            <h3>평화의숲 반려동물 수목원</h3>
-            <div class="funeral-hall-meta">
-              <span><i class="fas fa-map-marker-alt"></i> 경기 용인시 · 15.2km</span>
-              <span><i class="fas fa-clock"></i> 09:00 - 18:00</span>
-              <span><i class="fas fa-star" style="color:var(--accent-yellow);"></i> 4.9 (156)</span>
-            </div>
-          </div>
-        </div>
-        <div class="funeral-hall-services">
-          <span class="tag" style="background:#E8F5E9;color:var(--accent-green);">수목장 전문</span>
-          <span class="tag" style="background:#FFF8E1;color:var(--accent-yellow);">산골</span>
-          <span class="tag" style="background:#F3E8FF;color:var(--accent-purple);">자연장</span>
-          <span class="tag" style="background:#E8F4FF;color:var(--primary);">가족참여</span>
-        </div>
-        <div class="funeral-hall-actions">
-          <button onclick="showToast('전화 연결 중...')"><i class="fas fa-phone"></i> 전화</button>
-          <button onclick="showToast('예약 페이지로 이동합니다')"><i class="fas fa-calendar-check"></i> 예약</button>
-        </div>
+      <div class="pet-select-label" style="margin-top:16px">후기 내용</div>
+      <textarea class="review-textarea" id="review-text" placeholder="진료 경험을 자유롭게 작성해 주세요. 다른 반려인들에게 도움이 됩니다 🐾"></textarea>
+      <div style="display:flex;gap:10px;margin-top:16px">
+        <button style="flex:1;padding:14px;border-radius:14px;border:1.5px solid var(--border);background:none;font-size:14px;font-weight:600;color:var(--text-sub);cursor:pointer" onclick="closeReviewModal()">취소</button>
+        <button class="submit-review-btn" style="flex:2;margin:0" onclick="submitReview()">후기 등록하기</button>
       </div>
     </div>
   </div>
 
-  <!-- Toast -->
+  <!-- ===================== CART MODAL ===================== -->
+  <div class="modal-overlay" id="cart-modal">
+    <div class="modal-sheet">
+      <div class="modal-handle"></div>
+      <div class="modal-title">장바구니 🛒</div>
+      <div id="cart-items-list"></div>
+      <div class="cart-total">
+        <span class="cart-total-label">총 결제금액</span>
+        <span class="cart-total-price" id="cart-total-price">₩0</span>
+      </div>
+      <button class="checkout-btn" onclick="checkout()">결제하기</button>
+      <button style="width:100%;padding:12px;border-radius:14px;border:1.5px solid var(--border);background:none;font-size:14px;font-weight:600;color:var(--text-sub);cursor:pointer;margin-top:10px" onclick="closeCart()">계속 쇼핑</button>
+    </div>
+  </div>
+
+  <!-- TOAST -->
   <div class="toast" id="toast"></div>
+
 </div>
 
 <script>
-  // ── Screen Navigation ──
-  let currentScreen = 'splash';
-  const screenHistory = ['splash'];
+// ─────────────── DATA ───────────────
+const hospitals = [
+  {
+    name: '한강로 펫 동물병원',
+    emoji: '🏥',
+    addr: '서울 용산구 한강로 123',
+    hours: '09:00~20:00 (월~토)',
+    rating: '4.8 (234개 리뷰)',
+    avgRating: 4.8,
+    tags: ['🐶 강아지', '🐱 고양이', '🦜 이색동물'],
+    animals: ['🐶 강아지', '🐱 고양이', '🦜 앵무새', '🐰 토끼', '🐹 햄스터'],
+    tagClasses: ['htag-blue','htag-blue','htag-purple']
+  },
+  {
+    name: '이색동물 전문 케어센터',
+    emoji: '🐾',
+    addr: '서울 마포구 월드컵로 56',
+    hours: '10:00~19:00 (매일)',
+    rating: '4.9 (312개 리뷰)',
+    avgRating: 4.9,
+    tags: ['🦎 파충류 전문', '🦜 조류', '🐰 소동물'],
+    animals: ['🦎 파충류', '🦜 앵무새/조류', '🐰 토끼', '🐹 햄스터', '🐸 양서류', '🦔 고슴도치'],
+    tagClasses: ['htag-orange','htag-purple','htag-green']
+  },
+  {
+    name: '24시 프리미엄 동물의료원',
+    emoji: '🌟',
+    addr: '서울 강남구 테헤란로 200',
+    hours: '24시간 운영',
+    rating: '4.7 (189개 리뷰)',
+    avgRating: 4.7,
+    tags: ['🐶 강아지', '🐱 고양이', '응급24시'],
+    animals: ['🐶 강아지', '🐱 고양이', '🐇 토끼', '응급처치'],
+    tagClasses: ['htag-blue','htag-blue','htag-orange']
+  },
+  {
+    name: '웰니스펫 동물병원',
+    emoji: '💚',
+    addr: '서울 송파구 올림픽로 88',
+    hours: '09:00~18:00 (월~금)',
+    rating: '4.6 (98개 리뷰)',
+    avgRating: 4.6,
+    tags: ['🐠 어류 전문', '🐹 햄스터', '🐱 고양이'],
+    animals: ['🐠 어류', '🐹 햄스터', '🐱 고양이', '🐰 토끼'],
+    tagClasses: ['htag-green','htag-purple','htag-blue']
+  }
+];
 
-  function goScreen(id) {
-    if (id === currentScreen) return;
-    const prev = document.getElementById(currentScreen);
-    const next = document.getElementById(id);
-    if (!prev || !next) return;
+const reviewsData = {
+  0: [
+    {name:'김민지', avatar:'🐶', date:'2025.12.10', stars:5, text:'강아지 피부 트러블로 방문했는데 선생님이 너무 친절하게 설명해 주셨어요! 다음에 또 방문할 예정입니다.', pet:'🐶 강아지'},
+    {name:'이서준', avatar:'🐱', date:'2025.11.28', stars:5, text:'고양이 중성화 수술을 여기서 했는데 정말 꼼꼼하게 케어해 주셨어요. 회복도 빠르게 잘 됐습니다.', pet:'🐱 고양이'},
+    {name:'박지현', avatar:'🦜', date:'2025.11.15', stars:4, text:'앵무새 진료를 받았는데 이색동물도 잘 봐주시더라고요. 이런 병원 찾기 정말 힘든데 감사해요!', pet:'🦜 조류'},
+  ],
+  1: [
+    {name:'최예림', avatar:'🦎', date:'2025.12.05', stars:5, text:'도마뱀 진료 받을 곳 없어서 고민이었는데 여기는 파충류 전문 선생님이 계셔서 정말 안심했어요!', pet:'🦎 파충류'},
+    {name:'강현우', avatar:'🐰', date:'2025.11.20', stars:5, text:'토끼 장염으로 급하게 갔는데 빠르게 치료해 주셨어요. 이색동물 전문이라 믿음이 가요.', pet:'🐰 소동물'},
+  ],
+  2: [
+    {name:'윤소정', avatar:'🐶', date:'2025.12.12', stars:5, text:'새벽 2시에 강아지가 갑자기 아팠는데 24시라서 바로 갈 수 있었어요. 정말 감사합니다!', pet:'🐶 강아지'},
+    {name:'임재현', avatar:'🐱', date:'2025.11.30', stars:4, text:'응급 상황에서 빠르게 대처해 주셨어요. 24시 운영이라 정말 든든합니다.', pet:'🐱 고양이'},
+  ],
+  3: [
+    {name:'정수아', avatar:'🐠', date:'2025.12.01', stars:5, text:'금붕어 치료해 주는 곳 없어서 고민이었는데 어류도 진료가 가능하더라고요! 정말 특이하고 좋은 병원입니다.', pet:'🐠 어류'},
+  ]
+};
 
-    prev.classList.remove('active');
-    prev.classList.add('slide-out');
-    setTimeout(() => prev.classList.remove('slide-out'), 350);
+const petData = [
+  {
+    name:'두부', breed:'포메라니안', type:'강아지', emoji:'🐶',
+    weight:'3.2kg', age:'4살', nextVax:'2026.02.15',
+    stats:{체중:'3.2kg', 나이:'4살', 예방접종:'D-42'},
+    health:[65,72,80,75,90,85,88],
+    vaccines:[
+      {name:'종합백신(5종)', date:'2025.10.05', status:'done'},
+      {name:'켄넬코프', date:'2025.10.05', status:'done'},
+      {name:'광견병', date:'2026.02.15', status:'upcoming'},
+      {name:'심장사상충', date:'매월 투약', status:'upcoming'},
+    ]
+  },
+  {
+    name:'나비', breed:'코리안 숏헤어', type:'고양이', emoji:'🐱',
+    weight:'4.1kg', age:'3살', nextVax:'2026.03.20',
+    stats:{체중:'4.1kg', 나이:'3살', 예방접종:'D-75'},
+    health:[70,68,75,80,85,82,90],
+    vaccines:[
+      {name:'종합백신(3종)', date:'2025.09.20', status:'done'},
+      {name:'구충제', date:'2025.11.28', status:'done'},
+      {name:'범백혈구감소증', date:'2026.03.20', status:'upcoming'},
+    ]
+  },
+  {
+    name:'피카', breed:'유황앵무', type:'조류(이색동물)', emoji:'🦜',
+    weight:'0.8kg', age:'2살', nextVax:'2026.01.10',
+    stats:{체중:'0.8kg', 나이:'2살', 예방접종:'D-10'},
+    health:[80,75,82,78,88,85,92],
+    vaccines:[
+      {name:'뉴캐슬병', date:'2025.07.10', status:'done'},
+      {name:'영양검사', date:'2025.11.10', status:'done'},
+      {name:'연간 건강검진', date:'2026.01.10', status:'upcoming'},
+    ]
+  }
+];
 
-    next.classList.add('active');
+const products = [
+  {id:0,cat:'dog',emoji:'🥩',brand:'로얄캐닌',name:'강아지 성견 사료 3kg',price:42000,original:52000,badge:'sale',badgeClass:'badge-sale'},
+  {id:1,cat:'cat',emoji:'🐟',brand:'힐스',name:'고양이 내장건강 사료 2kg',price:38000,original:45000,badge:'sale',badgeClass:'badge-sale'},
+  {id:2,cat:'exotic',emoji:'🌾',brand:'엑조틱케어',name:'앵무새 전용 영양 펠릿',price:18000,original:null,badge:'new',badgeClass:'badge-new'},
+  {id:3,cat:'dog',emoji:'🎾',brand:'콩',name:'강아지 인터랙티브 볼',price:15000,original:null,badge:'hot',badgeClass:'badge-hot'},
+  {id:4,cat:'exotic',emoji:'🦎',brand:'레프티',name:'파충류 UVB 램프 세트',price:65000,original:80000,badge:'sale',badgeClass:'badge-sale'},
+  {id:5,cat:'health',emoji:'💊',brand:'닥터펫',name:'멀티 비타민 영양제 60정',price:22000,original:null,badge:'new',badgeClass:'badge-new'},
+  {id:6,cat:'cat',emoji:'🏠',brand:'스마트펫',name:'고양이 자동 급수기',price:35000,original:42000,badge:'sale',badgeClass:'badge-sale'},
+  {id:7,cat:'dog',emoji:'🛁',brand:'퍼피러브',name:'강아지 순한 샴푸 500ml',price:16000,original:null,badge:'hot',badgeClass:'badge-hot'},
+  {id:8,cat:'exotic',emoji:'🐠',brand:'아쿠아원',name:'물고기 수조 필터',price:28000,original:35000,badge:'sale',badgeClass:'badge-sale'},
+  {id:9,cat:'health',emoji:'🩺',brand:'헬스펫',name:'귀세정제 / 발진케어 세트',price:19000,original:null,badge:'new',badgeClass:'badge-new'},
+];
+
+// ─────────────── STATE ───────────────
+let currentScreen = 'splash';
+let prevScreen = 'home';
+let selectedDate = null;
+let selectedTime = null;
+let currentHospital = 0;
+let reviewStar = 5;
+let reviewPet = '🐶 강아지';
+let cart = [];
+let shopCatFilter = 'all';
+let favHospitals = [];
+let currentPet = 0;
+let calYear, calMonth;
+
+// ─────────────── NAVIGATION ───────────────
+function goScreen(id) {
+  prevScreen = currentScreen;
+  const screens = document.querySelectorAll('.screen');
+  screens.forEach(s => s.classList.remove('active'));
+  const target = document.getElementById('screen-' + id);
+  if (target) {
+    target.classList.add('active');
     currentScreen = id;
-    screenHistory.push(id);
-
-    // Update nav items
-    document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
-    const navMap = { home:0, find:1, mypet:3, mypage:4 };
-    if (navMap[id] !== undefined) {
-      document.querySelectorAll('.bottom-nav').forEach(nav => {
-        const items = nav.querySelectorAll('.nav-item');
-        if (items[navMap[id]]) items[navMap[id]].classList.add('active');
-      });
-    }
-
-    // Scroll to top
-    const scroll = next.querySelector('.scroll-content');
-    if (scroll) scroll.scrollTop = 0;
   }
+  if (id === 'mypet') renderPet(currentPet);
+  if (id === 'shop') renderProducts(products);
+  if (id === 'booking') { initCalendar(); resetBookingSteps(); }
+  if (id === 'detail') renderDetail(currentHospital);
+  updateCartBadge();
+}
 
-  // ── Banner Slider ──
-  let bannerIdx = 0;
-  const bannerSlides = document.querySelectorAll('.banner-slide');
-  const bannerDots = document.querySelectorAll('.banner-dot');
-  function rotateBanner() {
-    bannerSlides.forEach(s => s.classList.remove('active'));
-    bannerDots.forEach(d => d.classList.remove('active'));
-    bannerIdx = (bannerIdx + 1) % bannerSlides.length;
-    bannerSlides[bannerIdx].classList.add('active');
-    bannerDots[bannerIdx].classList.add('active');
+function goBack() {
+  goScreen(prevScreen !== currentScreen ? prevScreen : 'home');
+}
+
+function setNav(id) {
+  goScreen(id);
+}
+
+function filterChip(el) {
+  document.querySelectorAll('#screen-find .filter-chips .chip').forEach(c => c.classList.remove('active'));
+  el.classList.add('active');
+}
+
+function filterRecord(el, type) {
+  document.querySelectorAll('#screen-records .chip').forEach(c => c.classList.remove('active'));
+  el.classList.add('active');
+}
+
+function selectMarker(idx) {
+  document.querySelectorAll('.map-marker').forEach(m => m.classList.remove('active'));
+  document.querySelectorAll('.map-marker')[idx].classList.add('active');
+  document.querySelectorAll('#find-hospital-list .hospital-card').forEach((c, i) => {
+    c.classList.toggle('selected', i === idx);
+  });
+}
+
+// ─────────────── DETAIL ───────────────
+function openDetail(idx) {
+  currentHospital = idx;
+  goScreen('detail');
+}
+
+function renderDetail(idx) {
+  const h = hospitals[idx];
+  document.getElementById('detail-title').textContent = h.name;
+  document.getElementById('detail-hero').textContent = h.emoji;
+  document.getElementById('detail-name').textContent = h.name;
+  document.getElementById('detail-addr').textContent = h.addr;
+  document.getElementById('detail-hours').textContent = h.hours;
+  document.getElementById('detail-rating').textContent = h.rating;
+  document.getElementById('detail-rev-avg').textContent = h.avgRating;
+  document.getElementById('detail-heart').style.color = favHospitals.includes(idx) ? 'var(--secondary)' : 'var(--text-light)';
+
+  const tagsEl = document.getElementById('detail-tags');
+  tagsEl.innerHTML = h.tags.map((t, i) => `<span class="htag ${h.tagClasses[i]}">${t}</span>`).join('');
+
+  const animalsEl = document.getElementById('detail-animals');
+  animalsEl.innerHTML = h.animals.map(a =>
+    `<span class="pet-chip" style="background:var(--primary-light);color:var(--primary);border-radius:20px;padding:5px 12px;font-size:12px;font-weight:600;border:1px solid var(--primary-light)">${a}</span>`
+  ).join('');
+
+  renderReviews(idx);
+}
+
+function toggleFav() {
+  const idx = currentHospital;
+  if (favHospitals.includes(idx)) {
+    favHospitals = favHospitals.filter(i => i !== idx);
+    document.getElementById('detail-heart').style.color = 'var(--text-light)';
+    showToast('즐겨찾기에서 제거되었습니다');
+  } else {
+    favHospitals.push(idx);
+    document.getElementById('detail-heart').style.color = 'var(--secondary)';
+    showToast('즐겨찾기에 추가되었습니다 ❤️');
   }
-  setInterval(rotateBanner, 3500);
+}
 
-  // ── Calendar ──
-  let calYear = 2026, calMonth = 5; // 0-indexed
-  let selectedDay = null;
+// ─────────────── REVIEWS ───────────────
+function renderReviews(idx) {
+  const list = document.getElementById('review-list');
+  const reviews = reviewsData[idx] || [];
+  list.innerHTML = reviews.length === 0
+    ? '<div class="empty-state"><i class="fas fa-comment"></i><p>아직 후기가 없어요.<br>첫 후기를 작성해 보세요!</p></div>'
+    : reviews.map(r => `
+      <div class="review-card">
+        <div class="review-header">
+          <div class="reviewer">
+            <div class="reviewer-avatar">${r.avatar}</div>
+            <div>
+              <div class="reviewer-name">${r.name}</div>
+              <div class="reviewer-date">${r.date}</div>
+            </div>
+          </div>
+          <div class="review-stars">${'<i class="fas fa-star"></i>'.repeat(r.stars)}</div>
+        </div>
+        <div class="review-text">${r.text}</div>
+        <span class="review-pet-tag">${r.pet}</span>
+      </div>
+    `).join('');
+}
 
-  function renderCalendar() {
-    const titleEl = document.getElementById('calendarTitle');
-    const daysEl = document.getElementById('calendarDays');
-    titleEl.textContent = `${calYear}년 ${calMonth + 1}월`;
-    daysEl.innerHTML = '';
+function openReviewModal() {
+  document.getElementById('review-modal').classList.add('active');
+  document.getElementById('review-text').value = '';
+  setStar(5);
+}
+function closeReviewModal() { document.getElementById('review-modal').classList.remove('active'); }
 
-    const firstDay = new Date(calYear, calMonth, 1).getDay();
-    const daysInMonth = new Date(calYear, calMonth + 1, 0).getDate();
-    const today = new Date();
+function setStar(n) {
+  reviewStar = n;
+  const stars = document.querySelectorAll('.star-btn');
+  stars.forEach((s, i) => {
+    s.textContent = i < n ? '⭐' : '☆';
+    s.classList.toggle('active', i < n);
+  });
+}
 
-    for (let i = 0; i < firstDay; i++) {
-      daysEl.innerHTML += '<div></div>';
-    }
-    for (let d = 1; d <= daysInMonth; d++) {
-      const isToday = (calYear === today.getFullYear() && calMonth === today.getMonth() && d === today.getDate());
-      const isPast = new Date(calYear, calMonth, d) < new Date(today.getFullYear(), today.getMonth(), today.getDate());
-      const isSelected = d === selectedDay;
-      const hasSlot = [3,5,7,10,12,15,17,19,22,24,26,28].includes(d);
-      let cls = 'cal-day';
-      if (isToday) cls += ' today';
-      if (isPast) cls += ' disabled';
-      if (isSelected) cls += ' selected';
-      if (hasSlot && !isPast) cls += ' has-slot';
-      daysEl.innerHTML += `<button class="${cls}" onclick="selectDay(${d})">${d}</button>`;
-    }
-  }
+function selectPetRadio(el) {
+  document.querySelectorAll('.pet-radio').forEach(r => r.classList.remove('selected'));
+  el.classList.add('selected');
+  reviewPet = el.textContent;
+}
 
-  function selectDay(d) {
-    selectedDay = d;
-    renderCalendar();
-  }
+function submitReview() {
+  const text = document.getElementById('review-text').value.trim();
+  if (!text) { showToast('후기 내용을 작성해 주세요'); return; }
+  const idx = currentHospital;
+  if (!reviewsData[idx]) reviewsData[idx] = [];
+  reviewsData[idx].unshift({
+    name: '나', avatar: '😊', date: '방금 전',
+    stars: reviewStar, text, pet: reviewPet
+  });
+  closeReviewModal();
+  renderReviews(idx);
+  showToast('후기가 등록되었습니다! 감사합니다 🐾');
+}
 
-  function changeMonth(dir) {
-    calMonth += dir;
-    if (calMonth > 11) { calMonth = 0; calYear++; }
-    if (calMonth < 0) { calMonth = 11; calYear--; }
-    selectedDay = null;
-    renderCalendar();
-  }
+// ─────────────── CALENDAR ───────────────
+function initCalendar() {
+  const now = new Date();
+  calYear = now.getFullYear();
+  calMonth = now.getMonth();
   renderCalendar();
+}
 
-  // ── Time Slot ──
-  function selectTime(el) {
-    document.querySelectorAll('.time-slot').forEach(s => s.classList.remove('selected'));
-    el.classList.add('selected');
+function renderCalendar() {
+  const cal = document.getElementById('booking-calendar');
+  if (!cal) return;
+  const monthNames = ['1월','2월','3월','4월','5월','6월','7월','8월','9월','10월','11월','12월'];
+  const firstDay = new Date(calYear, calMonth, 1).getDay();
+  const daysInMonth = new Date(calYear, calMonth+1, 0).getDate();
+  const today = new Date();
+
+  const availDays = [3,5,7,9,12,14,16,18,21,23,25];
+
+  let days = '';
+  for (let i = 0; i < firstDay; i++) days += `<div class="cal-day other-month"></div>`;
+  for (let d = 1; d <= daysInMonth; d++) {
+    const date = new Date(calYear, calMonth, d);
+    const isToday = date.toDateString() === today.toDateString();
+    const isPast = date < new Date(today.setHours(0,0,0,0));
+    const isSelected = selectedDate && date.toDateString() === selectedDate.toDateString();
+    const hasSlot = availDays.includes(d);
+    let cls = 'cal-day';
+    if (isPast) cls += ' disabled';
+    else if (isSelected) cls += ' selected';
+    else if (isToday) cls += ' today';
+    if (hasSlot && !isPast) cls += ' has-slots';
+    days += `<div class="${cls}" onclick="${isPast ? '' : `pickDate(${d})`}">${d}</div>`;
   }
 
-  // ── Chip Toggle ──
-  document.querySelectorAll('.chip-row').forEach(row => {
-    row.querySelectorAll('.chip').forEach(chip => {
-      chip.addEventListener('click', () => {
-        row.querySelectorAll('.chip').forEach(c => c.classList.remove('active'));
-        chip.classList.add('active');
-      });
-    });
+  cal.innerHTML = `
+    <div class="cal-header">
+      <div class="cal-month">${calYear}년 ${monthNames[calMonth]}</div>
+      <div class="cal-nav">
+        <button class="cal-nav-btn" onclick="moveMonth(-1)"><i class="fas fa-chevron-left"></i></button>
+        <button class="cal-nav-btn" onclick="moveMonth(1)"><i class="fas fa-chevron-right"></i></button>
+      </div>
+    </div>
+    <div class="cal-weekdays">
+      ${['일','월','화','수','목','금','토'].map(w=>`<div class="cal-weekday">${w}</div>`).join('')}
+    </div>
+    <div class="cal-grid">${days}</div>
+  `;
+}
+
+function moveMonth(delta) {
+  calMonth += delta;
+  if (calMonth < 0) { calMonth = 11; calYear--; }
+  if (calMonth > 11) { calMonth = 0; calYear++; }
+  renderCalendar();
+}
+
+function pickDate(d) {
+  selectedDate = new Date(calYear, calMonth, d);
+  renderCalendar();
+}
+
+// ─────────────── BOOKING ───────────────
+function resetBookingSteps() {
+  selectedDate = null; selectedTime = null;
+  ['booking-step2','booking-step3','booking-step4','booking-success'].forEach((id,i) => {
+    document.getElementById(id).style.display = i===0 ? 'block' : 'none';
   });
-
-  // ── View Toggle ──
-  document.querySelectorAll('.view-toggle').forEach(toggle => {
-    toggle.querySelectorAll('button').forEach(btn => {
-      btn.addEventListener('click', () => {
-        toggle.querySelectorAll('button').forEach(b => b.classList.remove('active'));
-        btn.classList.add('active');
-      });
-    });
+  ['step1','step2','step3','step4'].forEach((id, i) => {
+    const el = document.getElementById(id);
+    el.classList.remove('active','done');
+    if (i===0) el.classList.add('done');
+    if (i===1) el.classList.add('active');
   });
+  initCalendar();
+}
 
-  // ── Pet Tabs ──
-  document.querySelectorAll('.pet-tab').forEach(tab => {
-    tab.addEventListener('click', () => {
-      document.querySelectorAll('.pet-tab').forEach(t => t.classList.remove('active'));
-      tab.classList.add('active');
-    });
+function bookingNext(step) {
+  if (step === 3) {
+    if (!selectedDate) { showToast('날짜를 선택해 주세요'); return; }
+    document.getElementById('booking-step2').style.display = 'none';
+    document.getElementById('booking-step3').style.display = 'block';
+    const d = selectedDate;
+    document.getElementById('selected-date-text').textContent =
+      `${d.getFullYear()}년 ${d.getMonth()+1}월 ${d.getDate()}일`;
+    renderTimeSlots();
+    document.getElementById('step2').classList.remove('active');
+    document.getElementById('step2').classList.add('done');
+    document.getElementById('step3').classList.add('active');
+  } else if (step === 4) {
+    if (!selectedTime) { showToast('시간을 선택해 주세요'); return; }
+    document.getElementById('booking-step3').style.display = 'none';
+    document.getElementById('booking-step4').style.display = 'block';
+    const d = selectedDate;
+    const dateStr = `${d.getFullYear()}년 ${d.getMonth()+1}월 ${d.getDate()}일`;
+    document.getElementById('confirm-date').textContent = dateStr;
+    document.getElementById('confirm-time').textContent = selectedTime;
+    document.getElementById('step3').classList.remove('active');
+    document.getElementById('step3').classList.add('done');
+    document.getElementById('step4').classList.add('active');
+  }
+}
+
+function renderTimeSlots() {
+  const times = [
+    {t:'09:00', full:false},{t:'09:30', full:true},{t:'10:00', full:false},
+    {t:'10:30', full:false},{t:'11:00', full:true},{t:'14:00', full:false},
+    {t:'14:30', full:false},{t:'15:00', full:false},{t:'16:00', full:true},
+    {t:'16:30', full:false},{t:'17:00', full:false},{t:'18:00', full:false},
+  ];
+  const grid = document.getElementById('time-grid');
+  grid.innerHTML = times.map(({t, full}) => `
+    <div class="time-slot ${full ? 'full' : 'available'}" onclick="${full ? '' : `pickTime('${t}', this)`}">
+      <div class="slot-time">${t}</div>
+      <div class="slot-status">${full ? '마감' : '예약가능'}</div>
+    </div>
+  `).join('');
+}
+
+function pickTime(t, el) {
+  document.querySelectorAll('.time-slot').forEach(s => s.classList.remove('selected'));
+  el.classList.add('selected');
+  selectedTime = t;
+}
+
+function completeBooking() {
+  const d = selectedDate;
+  const dateStr = `${d.getFullYear()}년 ${d.getMonth()+1}월 ${d.getDate()}일`;
+  document.getElementById('done-date').textContent = dateStr;
+  document.getElementById('done-time').textContent = selectedTime;
+  document.getElementById('booking-step4').style.display = 'none';
+  document.getElementById('booking-success').style.display = 'block';
+  document.getElementById('step4').classList.remove('active');
+  document.getElementById('step4').classList.add('done');
+}
+
+// ─────────────── MY PET ───────────────
+function switchPet(el, idx) {
+  if (idx === 3) { showToast('반려동물 추가 기능 준비 중입니다'); return; }
+  document.querySelectorAll('.pet-tab').forEach(t => t.classList.remove('active'));
+  el.classList.add('active');
+  currentPet = idx;
+  renderPet(idx);
+}
+
+function renderPet(idx) {
+  const p = petData[idx];
+  const container = document.getElementById('pet-content');
+  const statKeys = Object.keys(p.stats);
+
+  const vaxHTML = p.vaccines.map((v, i) => `
+    <div class="vax-item">
+      <div class="vax-dot-wrap">
+        <div class="vax-dot ${v.status}"></div>
+        ${i < p.vaccines.length - 1 ? '<div class="vax-line"></div>' : ''}
+      </div>
+      <div class="vax-info">
+        <div class="vax-name">${v.name}</div>
+        <div class="vax-date">${v.date}</div>
+        <span class="vax-badge vax-${v.status}-badge">
+          ${v.status==='done'?'완료':v.status==='upcoming'?'예정':'기한초과'}
+        </span>
+      </div>
+    </div>
+  `).join('');
+
+  const maxH = Math.max(...p.health);
+  const barsHTML = p.health.map((h, i) => {
+    const labels = ['월','화','수','목','금','토','일'];
+    const height = Math.round((h / maxH) * 70);
+    return `<div class="chart-bar-wrap">
+      <div class="chart-bar ${i===p.health.length-1?'active':''}" style="height:${height}px"></div>
+      <div class="chart-bar-label">${labels[i]}</div>
+    </div>`;
+  }).join('');
+
+  const typeColor = p.type.includes('고양이') ? 'var(--accent-green)' :
+                    p.type.includes('강아지') ? 'var(--primary)' : 'var(--accent-purple)';
+
+  container.innerHTML = `
+    <div class="pet-card-main">
+      <div class="pet-card-header">
+        <div class="pet-avatar">${p.emoji}</div>
+        <div>
+          <div class="pet-name">${p.name}</div>
+          <div class="pet-breed">${p.breed}</div>
+          <div style="font-size:11px;background:rgba(255,255,255,0.2);border-radius:8px;padding:2px 8px;display:inline-block;margin-top:4px;color:#fff;font-weight:600">${p.type}</div>
+        </div>
+      </div>
+      <div class="pet-stats">
+        ${statKeys.map(k => `
+          <div class="pet-stat">
+            <div class="pet-stat-val">${p.stats[k]}</div>
+            <div class="pet-stat-key">${k}</div>
+          </div>
+        `).join('')}
+      </div>
+    </div>
+    <div class="health-chart" style="margin:0 20px 16px">
+      <div class="section-header" style="margin-bottom:0">
+        <div class="section-title">이번 주 건강 활동</div>
+        <div style="font-size:12px;color:var(--primary);font-weight:600">점수 ${p.health[6]}점</div>
+      </div>
+      <div class="chart-bars">${barsHTML}</div>
+    </div>
+    <div style="padding:0 20px">
+      <div class="section-title" style="margin-bottom:12px">예방접종 타임라인</div>
+    </div>
+    <div class="vaccine-timeline">${vaxHTML}</div>
+    <div style="padding:0 20px 16px">
+      <button class="btn-full" onclick="goScreen('booking')">
+        <i class="fas fa-calendar-plus" style="margin-right:6px"></i>진료 예약하기
+      </button>
+    </div>
+  `;
+}
+
+// ─────────────── SHOP ───────────────
+function renderProducts(list) {
+  const grid = document.getElementById('product-grid');
+  if (!grid) return;
+  grid.innerHTML = list.map(p => `
+    <div class="product-card" onclick="addToCart(${p.id})">
+      <div class="product-img">
+        ${p.emoji}
+        <span class="product-badge ${p.badgeClass}">${p.badge==='sale'?'SALE':p.badge==='new'?'NEW':'HOT'}</span>
+      </div>
+      <div class="product-info">
+        <div class="product-brand">${p.brand}</div>
+        <div class="product-name">${p.name}</div>
+        <div class="product-price-row">
+          <div>
+            <div class="product-price">₩${p.price.toLocaleString()}</div>
+            ${p.original ? `<div class="product-original">₩${p.original.toLocaleString()}</div>` : ''}
+          </div>
+          <button class="product-add-btn" onclick="event.stopPropagation();addToCart(${p.id})">+</button>
+        </div>
+      </div>
+    </div>
+  `).join('');
+}
+
+function shopCat(el, cat) {
+  document.querySelectorAll('.shop-cats .chip').forEach(c => c.classList.remove('active'));
+  el.classList.add('active');
+  shopCatFilter = cat;
+  filterShop();
+}
+
+function filterShop() {
+  const q = (document.getElementById('shop-search-input')?.value || '').toLowerCase();
+  const filtered = products.filter(p => {
+    const matchCat = shopCatFilter === 'all' || p.cat === shopCatFilter;
+    const matchQ = !q || p.name.toLowerCase().includes(q) || p.brand.toLowerCase().includes(q);
+    return matchCat && matchQ;
   });
+  renderProducts(filtered);
+}
 
-  // ── Insurance Calculator ──
-  function calculateInsurance() {
-    const animal = document.getElementById('calcAnimal').value;
-    const age = document.getElementById('calcAge').value;
-    const plan = document.getElementById('calcPlan').value;
+// ─────────────── CART ───────────────
+function addToCart(id) {
+  const p = products.find(x => x.id === id);
+  const existing = cart.find(x => x.id === id);
+  if (existing) existing.qty++;
+  else cart.push({...p, qty: 1});
+  updateCartBadge();
+  showToast(`${p.name} 장바구니에 담겼어요 🛒`);
+}
 
-    const basePrices = { reptile: 9900, bird: 8900, small: 7900, fish: 5900, arthropod: 6900 };
-    const ageMultiplier = { '1': 0.9, '2': 1.0, '3': 1.3, '4': 1.6 };
-    const planMultiplier = { basic: 1.0, premium: 2.0, vip: 3.0 };
+function updateCartBadge() {
+  const count = cart.reduce((s, i) => s + i.qty, 0);
+  document.querySelectorAll('#cart-count').forEach(el => el.textContent = count);
+}
 
-    let price = Math.round(basePrices[animal] * ageMultiplier[age] * planMultiplier[plan] / 100) * 100;
-    let yearly = price * 12;
+function openCart() {
+  const modal = document.getElementById('cart-modal');
+  modal.classList.add('active');
+  renderCart();
+}
+function closeCart() { document.getElementById('cart-modal').classList.remove('active'); }
 
-    document.getElementById('calcResult').textContent = price.toLocaleString() + '원';
-    document.getElementById('calcYearly').textContent = yearly.toLocaleString();
+function renderCart() {
+  const list = document.getElementById('cart-items-list');
+  if (cart.length === 0) {
+    list.innerHTML = '<div class="empty-state" style="padding:24px 0"><i class="fas fa-shopping-cart"></i><p>장바구니가 비어있어요</p></div>';
+    document.getElementById('cart-total-price').textContent = '₩0';
+    return;
   }
+  list.innerHTML = cart.map(item => `
+    <div class="cart-item">
+      <div class="cart-item-img">${item.emoji}</div>
+      <div class="cart-item-info">
+        <div class="cart-item-name">${item.name}</div>
+        <div class="cart-item-price">₩${(item.price * item.qty).toLocaleString()}</div>
+      </div>
+      <div class="cart-qty">
+        <button class="cart-qty-btn" onclick="cartQty(${item.id}, -1)">−</button>
+        <span class="cart-qty-num">${item.qty}</span>
+        <button class="cart-qty-btn" onclick="cartQty(${item.id}, 1)">+</button>
+      </div>
+    </div>
+  `).join('');
+  const total = cart.reduce((s, i) => s + i.price * i.qty, 0);
+  document.getElementById('cart-total-price').textContent = '₩' + total.toLocaleString();
+}
 
-  // ── Review Modal ──
-  function openReviewModal() {
-    document.getElementById('reviewModal').classList.add('active');
-  }
-  function closeReviewModal() {
-    document.getElementById('reviewModal').classList.remove('active');
-  }
+function cartQty(id, delta) {
+  const idx = cart.findIndex(x => x.id === id);
+  if (idx < 0) return;
+  cart[idx].qty += delta;
+  if (cart[idx].qty <= 0) cart.splice(idx, 1);
+  updateCartBadge();
+  renderCart();
+}
 
-  let currentRating = 0;
-  function setRating(n) {
-    currentRating = n;
-    document.querySelectorAll('#starRating i').forEach((star, idx) => {
-      star.classList.toggle('active', idx < n);
-    });
-  }
+function checkout() {
+  cart = [];
+  updateCartBadge();
+  closeCart();
+  showToast('주문이 완료되었습니다! 감사합니다 🎉');
+}
 
-  function toggleTag(el) {
-    el.classList.toggle('selected');
-  }
+// ─────────────── FUNERAL ───────────────
+function selectFuneral(idx) {
+  document.querySelectorAll('.service-card').forEach((c, i) => c.classList.toggle('selected', i === idx));
+  const sel = document.getElementById('funeral-service-select');
+  if (sel) sel.selectedIndex = idx;
+}
 
-  function submitReview() {
-    if (currentRating === 0) {
-      showToast('별점을 선택해주세요 ⭐');
-      return;
-    }
-    closeReviewModal();
-    showToast('후기가 등록되었습니다! 감사합니다 🎉');
-    currentRating = 0;
-    document.querySelectorAll('#starRating i').forEach(s => s.classList.remove('active'));
-  }
+// ─────────────── TOAST ───────────────
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 2500);
+}
 
-  // Close modal on overlay click
-  document.getElementById('reviewModal').addEventListener('click', function(e) {
+// ─────────────── INIT ───────────────
+document.addEventListener('DOMContentLoaded', () => {
+  renderPet(0);
+  renderProducts(products);
+  updateCartBadge();
+
+  // Close modals on overlay click
+  document.getElementById('review-modal').addEventListener('click', function(e) {
     if (e.target === this) closeReviewModal();
   });
-
-  // ── Toast ──
-  function showToast(msg) {
-    const toast = document.getElementById('toast');
-    toast.textContent = msg;
-    toast.classList.add('show');
-    setTimeout(() => toast.classList.remove('show'), 2500);
-  }
-
-  // ── Map Marker Click ──
-  document.querySelectorAll('.map-marker').forEach(marker => {
-    marker.addEventListener('click', () => {
-      document.querySelectorAll('.map-marker').forEach(m => m.classList.remove('active'));
-      marker.classList.add('active');
-    });
+  document.getElementById('cart-modal').addEventListener('click', function(e) {
+    if (e.target === this) closeCart();
   });
+});
 </script>
 </body>
 </html>
